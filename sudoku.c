@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define COLUMNS 9
 #define ROWS 9
@@ -103,10 +104,88 @@ int isValid() {
 	return 1;
 }
 
+// check if the current board is valid by looking at the given row and column
+// return 1 if valid and 0 if invalid
+int pointIsValid(int row, int column) {
+	
+	//check the given row for unique values
+	int valueCounts[COLUMNS];
+	fillZeroes(valueCounts, COLUMNS);
+	for (int j = 0; j < COLUMNS; j++) {
+
+		int currentValue = board[row][j];
+		if (currentValue > 0 && currentValue <= COLUMNS) {
+			valueCounts[currentValue - 1]++;
+			if (valueCounts[currentValue - 1] > 1) {
+				printf("Did not pass row test for row=%d j=%d currentvalue=%d\n", row, j, currentValue);
+				return 0;
+			}
+		}
+	} // end for
+
+	//check the given column for unique values
+	fillZeroes(valueCounts, COLUMNS);
+	for (int i = 0; i < ROWS; i++) {
+
+		int currentValue = board[i][column];
+		if (currentValue > 0 && currentValue <= ROWS) {
+			valueCounts[currentValue - 1]++;
+			if (valueCounts[currentValue - 1] > 1) {
+				printf("Did not pass column test for i=%d column=%d currentvalue=%d\n", i, column, currentValue);
+				return 0;
+			}
+		}
+	} // end for
+
+
+	// check the current square for unique values
+	int startRow = row - (row % (ROWS / 3));
+	int startCol = column - (column % (COLUMNS / 3));
+	fillZeroes(valueCounts, COLUMNS);
+	for (int i = startRow; i < startRow + (ROWS / 3); i++) {
+		for (int j = startCol; j < startCol + (COLUMNS / 3); j++) {
+
+			int currentValue = board[i][j];
+			if (currentValue > 0 && currentValue <= ROWS) {
+				valueCounts[currentValue - 1]++;
+				if (valueCounts[currentValue - 1] > 1) {
+					printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
+					return 0;
+				}
+			}
+		} // end for
+	} // end for
+
+	return 1;
+}
+
 // fill the argument list with zeroes
 void fillZeroes(int* list, int length) {
 
 	for (int i = 0; i < length; i++) {
 		list[i] = 0;
 	}
+}
+
+//return a solved board
+int **solve() {
+	
+	int **original = (int **) malloc(sizeof(int*) * ROWS);
+	//int *columns = (int *) malloc(sizeof(int) * COLUMNS);
+	/*
+
+	// backup the original board
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			columns[j] = board[i][j];
+		}
+		original[i] = columns;
+	}
+
+	//free(original);
+
+	//setBoard(original);
+	*/
+	//return board;
+	return original;
 }
