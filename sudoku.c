@@ -167,25 +167,29 @@ void fillZeroes(int* list, int length) {
 	}
 }
 
-//return a solved board
+// return a solved board
 int **solve() {
 	
-	int **original = (int **) malloc(sizeof(int*) * ROWS);
-	//int *columns = (int *) malloc(sizeof(int) * COLUMNS);
-	/*
+	int original[ROWS][COLUMNS];
+
+	int *values = malloc(sizeof(int) * ROWS * COLUMNS);
+	int **rows = malloc(sizeof(int *) * ROWS);
+
+	// set up the rows array
+	for (int i = 0; i < ROWS; i++) {
+		rows[i] = values + (i * COLUMNS);
+	}
 
 	// backup the original board
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
-			columns[j] = board[i][j];
+			original[i][j] = board[i][j];
+			rows[i][j] = board[i][j];
 		}
-		original[i] = columns;
 	}
 
-	//free(original);
+	setBoard(original);
 
-	//setBoard(original);
-	*/
 	//return board;
-	return original;
+	return rows;
 }
