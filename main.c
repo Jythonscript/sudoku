@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "sudoku.h"
 
 int main(int argc, char **argv) {
@@ -10,12 +11,26 @@ int main(int argc, char **argv) {
 
 	int newBoard[9][9] = {{0, 9, 1, 0, 0, 0, 3, 4, 0}, {0, 0, 6, 8, 0, 2, 0, 0, 0}, {0, 4, 0, 0, 0, 0, 8, 6, 7}, {9, 0, 0, 1, 0, 0, 6, 0, 0}, {0, 3, 0, 0, 6, 0, 0, 1, 0}, {0, 0, 8, 0, 0, 4, 0, 0, 5}, {4, 2, 9, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 6, 0, 3, 2, 0, 0}, {0, 6, 3, 0, 0, 0, 1, 8, 0}};
 
-	setBoard(newBoard);
+	int *values = malloc(sizeof(int) * 9 * 9);
+	int **board = malloc(sizeof(int *) * 9);
 
-	//printf("%d\n", solve()[1][7]);
+	// set up the rows array
+	for (int i = 0; i < 9; i++) {
+		board[i] = values + (i * 9);
+	}
 
-	//printf("%d\n", pointIsValid(0, 4));
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			board[i][j] = newBoard[i][j];
+		}
+	}
 
-	printBoard();
+
+	printBoard(board);
+
+	// free memory
+	free(*board);
+	free(board);
+
 	return 0;
 }

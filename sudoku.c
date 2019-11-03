@@ -4,32 +4,20 @@
 #define COLUMNS 9
 #define ROWS 9
 
-int board[9][9];
-
 void fillZeroes(int* list, int length);
 
-void printBoard() {
+void printBoard(int **myBoard) {
 	
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
-			printf("%d ", board[i][j]);
+			printf("%d ", myBoard[i][j]);
 		}
 		putchar('\n');
 	}
 }
 
-// replace the contents of the board with a new board
-void setBoard(int newBoard[9][9]) {
-	
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
-			board[i][j] = newBoard[i][j];
-		}
-	}
-}
-
 // set board[x][y] to value, if it is not out-of-bounds
-void setValue(int row, int col, int value) {
+void setValue(int **board, int row, int col, int value) {
 
 	if (row >= 0 && col >= 0 && row < ROWS && col < COLUMNS) {
 		board[row][col] = value;
@@ -41,7 +29,7 @@ void setValue(int row, int col, int value) {
 
 // check if the current state of the board is valid by the rules of Sudoku
 // return 1 if valid and 0 if invalid
-int isValid() {
+int isValid(int **board) {
 	
 	//check all rows for unique values
 	for (int i = 0; i < ROWS; i++) {
@@ -106,7 +94,7 @@ int isValid() {
 
 // check if the current board is valid by looking at the given row and column
 // return 1 if valid and 0 if invalid
-int pointIsValid(int row, int column) {
+int pointIsValid(int **board, int row, int column) {
 	
 	//check the given row for unique values
 	int valueCounts[COLUMNS];
@@ -168,10 +156,11 @@ void fillZeroes(int* list, int length) {
 }
 
 // return a solved board
-int **solve() {
+int **solve(int **board) {
 	
-	int original[ROWS][COLUMNS];
+	//int original[ROWS][COLUMNS];
 
+	/*
 	int *values = malloc(sizeof(int) * ROWS * COLUMNS);
 	int **rows = malloc(sizeof(int *) * ROWS);
 
@@ -179,8 +168,9 @@ int **solve() {
 	for (int i = 0; i < ROWS; i++) {
 		rows[i] = values + (i * COLUMNS);
 	}
-
+	*/
 	// backup the original board
+	/*
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
 			original[i][j] = board[i][j];
@@ -189,7 +179,31 @@ int **solve() {
 	}
 
 	setBoard(original);
+	*/
 
-	//return board;
-	return rows;
+	// replace the first zero with 1-9 recursively until an invalid board state is encountered
+
+
+
+	return board;
 }
+
+int **solveBoard(int **myBoard) {
+
+	for (int i = 0; i < ROWS; i++ ) {
+		for (int j = 0; j < COLUMNS; j++) {
+			if (myBoard[i][j] == 0) {
+				for (int k = 1; k <= COLUMNS; k++) {
+					myBoard[i][j] = k;
+
+					if (pointIsValid(myBoard, i, j) == 0) {
+						
+					}
+				}
+			}
+		}
+	}
+	return myBoard;
+}
+
+
