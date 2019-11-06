@@ -5,6 +5,7 @@
 #define ROWS 9
 
 void fillZeroes(int* list, int length);
+int **solveBoard(int **myBoard);
 
 void printBoard(int **myBoard) {
 	
@@ -42,7 +43,7 @@ int isValid(int **board) {
 			if (currentValue > 0 && currentValue <= COLUMNS) {
 				valueCounts[currentValue - 1]++;
 				if (valueCounts[currentValue - 1] > 1) {
-					printf("Did not pass row test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
+					//printf("Did not pass row test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
 					return 0;
 				}
 			}
@@ -60,7 +61,7 @@ int isValid(int **board) {
 			if (currentValue > 0 && currentValue <= ROWS) {
 				valueCounts[currentValue - 1]++;
 				if (valueCounts[currentValue - 1] > 1) {
-					printf("Did not pass column test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
+					//printf("Did not pass column test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
 					return 0;
 				}
 			}
@@ -80,7 +81,7 @@ int isValid(int **board) {
 					if (currentValue > 0 && currentValue <= ROWS) {
 						valueCounts[currentValue - 1]++;
 						if (valueCounts[currentValue - 1] > 1) {
-							printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
+							//printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
 							return 0;
 						}
 					}
@@ -90,6 +91,20 @@ int isValid(int **board) {
 	} // end for
 
 	return 1;
+}
+
+int numZeroes(int **board) {
+	
+	int count = 0;
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			if (board[i][j] == 0) {
+				count++;
+			}
+
+		}
+	}
+	return count;
 }
 
 // check if the current board is valid by looking at the given row and column
@@ -105,7 +120,7 @@ int pointIsValid(int **board, int row, int column) {
 		if (currentValue > 0 && currentValue <= COLUMNS) {
 			valueCounts[currentValue - 1]++;
 			if (valueCounts[currentValue - 1] > 1) {
-				printf("Did not pass row test for row=%d j=%d currentvalue=%d\n", row, j, currentValue);
+				//printf("Did not pass row test for row=%d j=%d currentvalue=%d\n", row, j, currentValue);
 				return 0;
 			}
 		}
@@ -119,7 +134,7 @@ int pointIsValid(int **board, int row, int column) {
 		if (currentValue > 0 && currentValue <= ROWS) {
 			valueCounts[currentValue - 1]++;
 			if (valueCounts[currentValue - 1] > 1) {
-				printf("Did not pass column test for i=%d column=%d currentvalue=%d\n", i, column, currentValue);
+				//printf("Did not pass column test for i=%d column=%d currentvalue=%d\n", i, column, currentValue);
 				return 0;
 			}
 		}
@@ -137,7 +152,7 @@ int pointIsValid(int **board, int row, int column) {
 			if (currentValue > 0 && currentValue <= ROWS) {
 				valueCounts[currentValue - 1]++;
 				if (valueCounts[currentValue - 1] > 1) {
-					printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
+					//printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
 					return 0;
 				}
 			}
@@ -155,55 +170,66 @@ void fillZeroes(int* list, int length) {
 	}
 }
 
-// return a solved board
-int **solve(int **board) {
+// copy the contents of n by n 2d array arr1 into arr2
+void boardcpy(int **arr1, int **arr2, int n) {
 	
-	//int original[ROWS][COLUMNS];
-
-	/*
-	int *values = malloc(sizeof(int) * ROWS * COLUMNS);
-	int **rows = malloc(sizeof(int *) * ROWS);
-
-	// set up the rows array
-	for (int i = 0; i < ROWS; i++) {
-		rows[i] = values + (i * COLUMNS);
-	}
-	*/
-	// backup the original board
-	/*
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
-			original[i][j] = board[i][j];
-			rows[i][j] = board[i][j];
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			arr2[i][j] = arr1[i][j];
 		}
 	}
+}
 
-	setBoard(original);
-	*/
+int **createBoard() {
+	
+	int *values = malloc(sizeof(int) * 9 * 9);
+	int **board = malloc(sizeof(int *) * 9);
 
-	// replace the first zero with 1-9 recursively until an invalid board state is encountered
-
-
-
+	// set up the board array with pointers to values
+	for (int i = 0; i < 9; i++) {
+		board[i] = values + (i * 9);
+	}
 	return board;
 }
 
-int **solveBoard(int **myBoard) {
+void deleteBoard(int **board) {
 
+	free(*board);
+	free(board);
+}
+
+// return a solved board
+int **solve(int **board) {
+	
+	// board which will be modified
+	int **newBoard = createBoard();
+	boardcpy(board, newBoard, COLUMNS);
+
+	//return the board if it is completed
+	if (numZeroes(newBoard) == 0 && isValid(newBoard)) {
+		return newBoard;
+	}
+
+	// try each branch
 	for (int i = 0; i < ROWS; i++ ) {
 		for (int j = 0; j < COLUMNS; j++) {
-			if (myBoard[i][j] == 0) {
+			// find zeroes
+			if (newBoard[i][j] == 0) {
+				// replace zeroes with each number
 				for (int k = 1; k <= COLUMNS; k++) {
-					myBoard[i][j] = k;
-
-					if (pointIsValid(myBoard, i, j) == 0) {
-						
+					newBoard[i][j] = k;
+					if (pointIsValid(newBoard, i, j)) {
+						// if this branch is good, then keep going
+						boardcpy(solve(newBoard), newBoard, COLUMNS);
+						//if the board is complete, return it
+						if (numZeroes(newBoard) == 0 && isValid(newBoard)) {
+							return newBoard;
+						}
 					}
 				}
 			}
 		}
 	}
-	return myBoard;
+
+	return board;
 }
-
-

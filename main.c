@@ -11,13 +11,9 @@ int main(int argc, char **argv) {
 
 	int newBoard[9][9] = {{0, 9, 1, 0, 0, 0, 3, 4, 0}, {0, 0, 6, 8, 0, 2, 0, 0, 0}, {0, 4, 0, 0, 0, 0, 8, 6, 7}, {9, 0, 0, 1, 0, 0, 6, 0, 0}, {0, 3, 0, 0, 6, 0, 0, 1, 0}, {0, 0, 8, 0, 0, 4, 0, 0, 5}, {4, 2, 9, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 6, 0, 3, 2, 0, 0}, {0, 6, 3, 0, 0, 0, 1, 8, 0}};
 
-	int *values = malloc(sizeof(int) * 9 * 9);
-	int **board = malloc(sizeof(int *) * 9);
+	//int newBoard[9][9] = {{9, 6, 4, 1, 2, 7, 3, 8, 5}, {7, 3, 5, 6, 9, 8, 4, 1, 2}, {8, 1, 2, 3, 4, 5, 9, 7, 6}, {6, 2, 9, 7, 8, 1, 5, 3, 4}, {4, 8, 1, 5, 3, 2, 7, 6, 9}, {3, 5, 7, 4, 6, 9, 1, 2, 8}, {5, 9, 3, 8, 7, 6, 2, 4, 1}, {2, 4, 6, 9, 1, 3, 8, 5, 7}, {1, 7, 8, 2, 5, 4, 6, 9, 3}};
 
-	// set up the rows array
-	for (int i = 0; i < 9; i++) {
-		board[i] = values + (i * 9);
-	}
+	int **board = createBoard();
 
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
@@ -25,12 +21,11 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	//printBoard(board);
 
-	printBoard(board);
+	//printf("%d\n", isValid(board));
 
-	// free memory
-	free(*board);
-	free(board);
+	printBoard(solve(board));
 
 	return 0;
 }
