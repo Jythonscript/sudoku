@@ -182,8 +182,8 @@ void boardcpy(int **arr1, int **arr2, int n) {
 
 int **createBoard() {
 	
-	int *values = malloc(sizeof(int) * 9 * 9);
-	int **board = malloc(sizeof(int *) * 9);
+	int *values = (int *) malloc(sizeof(int) * 9 * 9);
+	int **board = (int **) malloc(sizeof(int *) * 9);
 
 	// set up the board array with pointers to values
 	for (int i = 0; i < 9; i++) {
