@@ -21,11 +21,28 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	//printBoard(board);
+	point_t *stack = (point_t *) malloc(sizeof(point_t) * numZeroes(board));
+	printf("Zeroes: %d\n", numZeroes(board));
+
+	point_t *ptr = stack;
+
+	point_t testPoint;
+	testPoint.row = 1;
+	testPoint.column = 3;
+
+	*ptr = testPoint;
+
+	printf("\nBefore revert\n");
+	printBoard(board);
+
+	printf("\nAfter revert\n");
+	revertBoard(board, stack, ptr);
+	printBoard(board);
+	
 
 	//printf("%d\n", isValid(board));
 
-	printBoard(solve(board));
+	//printBoard(solve(board));
 
 	return 0;
 }

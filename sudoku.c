@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "sudoku.h"
 
 #define COLUMNS 9
 #define ROWS 9
@@ -230,5 +231,28 @@ char **solve(char **board) {
 		}
 	}
 
+	return board;
+}
+
+// revert the board by the latest point on the stack
+void revertBoard(char **board, point_t *stack, point_t *ptr) {
+
+	printf("Row: %d\tColumn: %d\n", ptr->row, ptr->column);
+	board[(int)ptr->row][(int)ptr->column] = 0;
+
+	if (ptr != stack) {
+		ptr--;
+	}
+}
+
+// push a point onto the stack
+void pushPoint(point_t *point, point_t *stack, point_t *ptr) {
+	*ptr = *point;
+	ptr++;
+}
+
+// return a solved board, using a stack of points to track the changes
+char **pointStackSolve(char **board, point_t *stack) {
+	
 	return board;
 }
