@@ -5,9 +5,8 @@
 #define ROWS 9
 
 void fillZeroes(int* list, int length);
-int **solveBoard(int **myBoard);
 
-void printBoard(int **myBoard) {
+void printBoard(char **myBoard) {
 	
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
@@ -18,7 +17,7 @@ void printBoard(int **myBoard) {
 }
 
 // set board[x][y] to value, if it is not out-of-bounds
-void setValue(int **board, int row, int col, int value) {
+void setValue(char **board, int row, int col, int value) {
 
 	if (row >= 0 && col >= 0 && row < ROWS && col < COLUMNS) {
 		board[row][col] = value;
@@ -30,7 +29,7 @@ void setValue(int **board, int row, int col, int value) {
 
 // check if the current state of the board is valid by the rules of Sudoku
 // return 1 if valid and 0 if invalid
-int isValid(int **board) {
+int isValid(char **board) {
 	
 	//check all rows for unique values
 	for (int i = 0; i < ROWS; i++) {
@@ -93,7 +92,7 @@ int isValid(int **board) {
 	return 1;
 }
 
-int numZeroes(int **board) {
+int numZeroes(char **board) {
 	
 	int count = 0;
 	for (int i = 0; i < ROWS; i++) {
@@ -109,7 +108,7 @@ int numZeroes(int **board) {
 
 // check if the current board is valid by looking at the given row and column
 // return 1 if valid and 0 if invalid
-int pointIsValid(int **board, int row, int column) {
+int pointIsValid(char **board, int row, int column) {
 	
 	//check the given row for unique values
 	int valueCounts[COLUMNS];
@@ -171,7 +170,7 @@ void fillZeroes(int* list, int length) {
 }
 
 // copy the contents of n by n 2d array arr1 into arr2
-void boardcpy(int **arr1, int **arr2, int n) {
+void boardcpy(char **arr1, char **arr2, int n) {
 	
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
@@ -180,10 +179,10 @@ void boardcpy(int **arr1, int **arr2, int n) {
 	}
 }
 
-int **createBoard() {
+char **createBoard() {
 	
-	int *values = (int *) malloc(sizeof(int) * 9 * 9);
-	int **board = (int **) malloc(sizeof(int *) * 9);
+	char *values = (char *) malloc(sizeof(char) * 9 * 9);
+	char **board = (char **) malloc(sizeof(char *) * 9);
 
 	// set up the board array with pointers to values
 	for (int i = 0; i < 9; i++) {
@@ -192,17 +191,17 @@ int **createBoard() {
 	return board;
 }
 
-void deleteBoard(int **board) {
+void deleteBoard(char **board) {
 
 	free(*board);
 	free(board);
 }
 
 // return a solved board
-int **solve(int **board) {
+char **solve(char **board) {
 	
 	// board which will be modified
-	int **newBoard = createBoard();
+	char **newBoard = createBoard();
 	boardcpy(board, newBoard, COLUMNS);
 
 	//return the board if it is completed
