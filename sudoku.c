@@ -219,7 +219,9 @@ void pushPoint(point_t *point, point_t **ptr) {
 }
 
 // wrapper for pointStackSolve that sets up the stack and pointer
-void solve(char **board) {
+// return 1 if the board is solved
+// return 0 if the board is not solvable
+int solve(char **board) {
 
 	int zeroes = numZeroes(board);
 	
@@ -231,6 +233,7 @@ void solve(char **board) {
 
 	//free memory
 	free(stack);
+	return isValid(board);
 }
 
 // print stack info for debugging

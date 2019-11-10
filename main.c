@@ -24,15 +24,12 @@ int main(int argc, char **argv) {
 	printf("Initial board\n");
 	printBoard(board);
 
-	printf("\nSolved board\n");
-	solve(board);
-	printBoard(board);
-
-	if (isValid(board)) {
-		printf("\nThe board is valid\n");
+	if (solve(board)) {
+		printf("\nSolved board\n");
+		printBoard(board);
 	}
 	else {
-		printf("\nThe board is not valid\n");
+		printf("The board is not solvable\n");
 	}
 
 	return 0;

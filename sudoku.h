@@ -17,7 +17,7 @@ char **createBoard();
 void deleteBoard(char **board);
 void revertBoard(char **board, point_t *stack, point_t **ptr);
 void pushPoint(point_t *point, point_t **ptr);
-void solve(char **board);
+int solve(char **board);
 void printStackInfo(point_t *stack, int length);
 char **pointStackSolve(char **board, point_t *stack, point_t *ptr);
 
