@@ -4,45 +4,36 @@
 
 int main(int argc, char **argv) {
 
+	// boards for testing
 	//char newBoard[9][9] = {{1, 0, 1, 0, 1, 0, 1, 0, 1}, {2, 0, 2, 0, 2, 0, 2, 0, 2}, {3, 0, 3, 0, 3, 0, 3, 0, 3}, {4, 0, 4, 0, 4, 0, 4, 0, 4}, {5, 0, 5, 0, 5, 0, 5, 0, 5}, {6, 0, 6, 0, 6, 0, 6, 0, 6}, {7, 0, 7, 0, 7, 0, 7, 0, 7}, {8, 0, 8, 0, 8, 0, 8, 0, 8}, {9, 0, 9, 0, 9, 0, 9, 0, 9}};
 	//char newBoard[9][9] = {{1, 2, 3, 4, 5, 6, 7, 8, 9}, {9, 8, 7, 6, 5, 4, 3, 2, 1}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0}};
 	//char newBoard[9][9] = {{0, 0, 4, 0, 2, 0, 3, 0, 0}, {7, 0, 0, 0, 0, 0, 0, 0, 2}, {0, 1, 0, 3, 0, 0, 9, 0, 0}, {0, 0, 0, 7, 8, 0, 0, 0, 0}, {0, 8, 1, 0, 0, 0, 0, 6, 0}, {0, 0, 0, 0, 6, 9, 0, 0, 0}, {0, 9, 3, 0, 0, 6, 0, 4, 0}, {2, 0, 0, 0, 0, 0, 0, 5, 7}, {0, 0, 8, 0, 5, 0, 0, 0, 0}};
 	//char newBoard[9][9] = {{0, 9, 0, 0, 0, 0, 0, 0, 1}, {0, 0, 0, 9, 0, 0, 4, 8, 3}, {0, 1, 0, 4, 0, 6, 0, 0, 5}, {6, 4, 0, 0, 3, 0, 0, 0, 0}, {0, 3, 5, 0, 0, 0, 8, 4, 0}, {0, 0, 0, 0, 6, 0, 0, 5, 9}, {9, 0, 0, 2, 0, 5, 0, 7, 0}, {5, 7, 4, 0, 0, 3, 0, 0, 0}, {1, 0, 0, 0, 0, 0, 0, 3, 0}};
-
 	char newBoard[9][9] = {{0, 9, 1, 0, 0, 0, 3, 4, 0}, {0, 0, 6, 8, 0, 2, 0, 0, 0}, {0, 4, 0, 0, 0, 0, 8, 6, 7}, {9, 0, 0, 1, 0, 0, 6, 0, 0}, {0, 3, 0, 0, 6, 0, 0, 1, 0}, {0, 0, 8, 0, 0, 4, 0, 0, 5}, {4, 2, 9, 0, 0, 0, 0, 3, 0}, {0, 0, 0, 6, 0, 3, 2, 0, 0}, {0, 6, 3, 0, 0, 0, 1, 8, 0}};
-
 	//char newBoard[9][9] = {{9, 6, 4, 1, 2, 7, 3, 8, 5}, {7, 3, 5, 6, 9, 8, 4, 1, 2}, {8, 1, 2, 3, 4, 5, 9, 7, 6}, {6, 2, 9, 7, 8, 1, 5, 3, 4}, {4, 8, 1, 5, 3, 2, 7, 6, 9}, {3, 5, 7, 4, 6, 9, 1, 2, 8}, {5, 9, 3, 8, 7, 6, 2, 4, 1}, {2, 4, 6, 9, 1, 3, 8, 5, 7}, {1, 7, 8, 2, 5, 4, 6, 9, 3}};
 
+	// put the board into the heap so it can be passed as a parameter
 	char **board = createBoard();
-
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			board[i][j] = newBoard[i][j];
 		}
 	}
 
-	point_t *stack = (point_t *) malloc(sizeof(point_t) * numZeroes(board));
-	printf("Zeroes: %d\n", numZeroes(board));
-
-	point_t *ptr = stack;
-
-	point_t testPoint;
-	testPoint.row = 1;
-	testPoint.column = 3;
-
-	*ptr = testPoint;
-
-	printf("\nBefore revert\n");
+	// show the original board, then solve it
+	printf("Initial board\n");
 	printBoard(board);
 
-	printf("\nAfter revert\n");
-	revertBoard(board, stack, ptr);
+	printf("\nSolved board\n");
+	solve(board);
 	printBoard(board);
-	
 
-	//printf("%d\n", isValid(board));
-
-	//printBoard(solve(board));
+	if (isValid(board)) {
+		printf("\nThe board is valid\n");
+	}
+	else {
+		printf("\nThe board is not valid\n");
+	}
 
 	return 0;
 }

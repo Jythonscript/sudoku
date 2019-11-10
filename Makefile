@@ -1,2 +1,2 @@
 make:
-	gcc main.c sudoku.c -o sudoku
+	gcc main.c sudoku.c -o sudoku -O3

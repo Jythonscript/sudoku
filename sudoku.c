@@ -93,6 +93,7 @@ int isValid(char **board) {
 	return 1;
 }
 
+// return the number of tiles with a zero in them (blank spaces)
 int numZeroes(char **board) {
 	
 	int count = 0;
@@ -107,7 +108,8 @@ int numZeroes(char **board) {
 	return count;
 }
 
-// check if the current board is valid by looking at the given row and column
+// check if the current board is valid by looking at only the given row and column
+// this is faster that isValid if only one tile has been changed
 // return 1 if valid and 0 if invalid
 int pointIsValid(char **board, int row, int column) {
 	
@@ -180,6 +182,7 @@ void boardcpy(char **arr1, char **arr2, int n) {
 	}
 }
 
+// return a pointer to a new board
 char **createBoard() {
 	
 	char *values = (char *) malloc(sizeof(char) * 9 * 9);
@@ -192,38 +195,85 @@ char **createBoard() {
 	return board;
 }
 
+// free the memory allocated by the given board
 void deleteBoard(char **board) {
 
 	free(*board);
 	free(board);
 }
 
-// return a solved board
-char **solve(char **board) {
-	
-	// board which will be modified
-	char **newBoard = createBoard();
-	boardcpy(board, newBoard, COLUMNS);
+// revert the board by the latest point on the stack
+void revertBoard(char **board, point_t *stack, point_t **ptr) {
 
-	//return the board if it is completed
-	if (numZeroes(newBoard) == 0 && isValid(newBoard)) {
-		return newBoard;
+	(*ptr)--;
+	board[(int)(*ptr)->row][(int)(*ptr)->column] = 0;
+}
+
+// push a point onto the stack
+void pushPoint(point_t *point, point_t **ptr) {
+
+	(*ptr)->row = point->row;
+	(*ptr)->column = point->column;
+	(*ptr)++;
+	//ptr++;
+}
+
+// wrapper for pointStackSolve that sets up the stack and pointer
+void solve(char **board) {
+
+	int zeroes = numZeroes(board);
+	
+	point_t *stack = (point_t *) malloc(sizeof(point_t) * zeroes);
+	point_t *ptr = stack;
+
+	// solve the board
+	pointStackSolve(board, stack, ptr);
+
+	//free memory
+	free(stack);
+}
+
+// print stack info for debugging
+void printStackInfo(point_t *stack, int length) {
+
+	for (int i = 0; i < length; i++) {
+		printf("row: %d\tcolumn: %d\n", (stack + i)->row, (stack + i)->column);
+	}
+}
+
+// return a solved board, using a stack of points to track the changes
+char **pointStackSolve(char **board, point_t *stack, point_t *ptr) {
+
+	// if the board is good, return it
+	if (numZeroes(board) == 0 && isValid(board)) {
+		return board;
 	}
 
+	int numChanges = 0;
+	
 	// try each branch
-	for (int i = 0; i < ROWS; i++ ) {
+	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
 			// find zeroes
-			if (newBoard[i][j] == 0) {
+			if (board[i][j] == 0) {
+				// save each change on the stack
+				numChanges++;
+				point_t *myPoint = (point_t *) malloc(sizeof(point_t));
+				myPoint->row = i;
+				myPoint->column = j;
+				pushPoint(myPoint, &ptr);
+				free(myPoint);
+
 				// replace zeroes with each number
 				for (int k = 1; k <= COLUMNS; k++) {
-					newBoard[i][j] = k;
-					if (pointIsValid(newBoard, i, j)) {
-						// if this branch is good, then keep going
-						boardcpy(solve(newBoard), newBoard, COLUMNS);
-						//if the board is complete, return it
-						if (numZeroes(newBoard) == 0 && isValid(newBoard)) {
-							return newBoard;
+					board[i][j] = k;
+					if (pointIsValid(board, i, j)) {
+						// keep going since the branch is good
+						pointStackSolve(board, stack, ptr);
+
+						//if the board is good, return it
+						if (numZeroes(board) == 0 && isValid(board)) {
+							return board;
 						}
 					}
 				}
@@ -231,28 +281,11 @@ char **solve(char **board) {
 		}
 	}
 
-	return board;
-}
-
-// revert the board by the latest point on the stack
-void revertBoard(char **board, point_t *stack, point_t *ptr) {
-
-	printf("Row: %d\tColumn: %d\n", ptr->row, ptr->column);
-	board[(int)ptr->row][(int)ptr->column] = 0;
-
-	if (ptr != stack) {
-		ptr--;
+	// revert the changes made by this iteration because it did not find the solved board
+	for (int i = 0; i < numChanges; i++) {
+		revertBoard(board, stack, &ptr);
 	}
-}
 
-// push a point onto the stack
-void pushPoint(point_t *point, point_t *stack, point_t *ptr) {
-	*ptr = *point;
-	ptr++;
-}
-
-// return a solved board, using a stack of points to track the changes
-char **pointStackSolve(char **board, point_t *stack) {
-	
 	return board;
+
 }
