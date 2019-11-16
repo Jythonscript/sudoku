@@ -8,13 +8,18 @@ int main(int argc, char **argv) {
 
 	char *helpstring = "Usage: sudoku [OPTION]\n"
 					   "  -i, --input		input the board in text\n"
-					   "  -q, --quiet		reduce verbosity of instructional text\n"
+					   "  -q, --quiet		reduce verbosity of instructional in input\n"
 					   "  -h, --help		display this help and exit\n"
 					   "\nSource: <https://github.com/Jythonscript/sudoku>";
 
 	// flags
 	char input = 0;
 	char quiet = 0;
+
+	if (argc == 1) {
+		puts(helpstring);
+		return 0;
+	}
 
 	// getopts
 	while (1) {
