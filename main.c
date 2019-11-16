@@ -1,8 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <getopt.h>
 #include "sudoku.h"
 
 int main(int argc, char **argv) {
+
+	int c;
+
+	// getopts
+	while (1) {
+
+		int option_index = 0;
+		static struct option long_options[] = {
+			{"help", no_argument, 0, 'h'},
+			{0, 0, 0, 0}
+		};
+
+		c = getopt_long(argc, argv, "h", long_options, &option_index);
+
+		if (c == -1) {
+			break;
+		}
+
+		switch (c) {
+			case 'h':
+				printf("Usage: sudoku [OPTION]\n"
+					   "  -h, --help		display this help and exit\n");
+				return 0;
+			case '?':
+				return 1;
+			default:
+				printf("No argument\n");
+				return 0;
+		}
+	}
 
 	// boards for testing
 	//char newBoard[9][9] = {{1, 0, 1, 0, 1, 0, 1, 0, 1}, {2, 0, 2, 0, 2, 0, 2, 0, 2}, {3, 0, 3, 0, 3, 0, 3, 0, 3}, {4, 0, 4, 0, 4, 0, 4, 0, 4}, {5, 0, 5, 0, 5, 0, 5, 0, 5}, {6, 0, 6, 0, 6, 0, 6, 0, 6}, {7, 0, 7, 0, 7, 0, 7, 0, 7}, {8, 0, 8, 0, 8, 0, 8, 0, 8}, {9, 0, 9, 0, 9, 0, 9, 0, 9}};
