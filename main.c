@@ -25,7 +25,8 @@ int main(int argc, char **argv) {
 		switch (c) {
 			case 'h':
 				printf("Usage: sudoku [OPTION]\n"
-					   "  -h, --help		display this help and exit\n");
+					   "  -h, --help		display this help and exit\n"
+					   "\nSource: <https://github.com/Jythonscript/sudoku>\n");
 				return 0;
 			case '?':
 				return 1;
