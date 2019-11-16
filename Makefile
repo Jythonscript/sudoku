@@ -1,2 +1,2 @@
 make:
-	gcc main.c sudoku.c -o sudoku -O3
+	gcc main.c sudoku.c input.c -o sudoku -O3 -lreadline
