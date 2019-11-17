@@ -61,10 +61,11 @@ int main(int argc, char **argv) {
 		if (quiet == 0) {
 			printf("Entered board\n");
 			printBoard(board);
+			putchar('\n');
 		}
 
-		printf("\nSolved board\n");
-		if (solve(board)) {
+		if (isValid(board) && solve(board)) {
+			printf("Solved board\n");
 			printBoard(board);
 		}
 		else {
