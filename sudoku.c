@@ -227,12 +227,15 @@ int solve(char **board) {
 	
 	point_t *stack = (point_t *) malloc(sizeof(point_t) * zeroes);
 	point_t *ptr = stack;
+	char *solved = (char *) malloc(sizeof(char));
+	*solved = 0;
 
 	// solve the board
-	pointStackSolve(board, stack, ptr);
+	pointStackSolve(board, stack, ptr, solved);
 
 	//free memory
 	free(stack);
+	free(solved);
 	return isValid(board);
 }
 
@@ -245,10 +248,10 @@ void printStackInfo(point_t *stack, int length) {
 }
 
 // return a solved board, using a stack of points to track the changes
-char **pointStackSolve(char **board, point_t *stack, point_t *ptr) {
+char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved) {
 
 	// if the board is good, return it
-	if (numZeroes(board) == 0 && isValid(board)) {
+	if (*solved) {
 		return board;
 	}
 
@@ -272,10 +275,11 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr) {
 					board[i][j] = k;
 					if (pointIsValid(board, i, j)) {
 						// keep going since the branch is good
-						pointStackSolve(board, stack, ptr);
+						pointStackSolve(board, stack, ptr, solved);
 
 						//if the board is good, return it
 						if (numZeroes(board) == 0 && isValid(board)) {
+							*solved = 1;
 							return board;
 						}
 					}
