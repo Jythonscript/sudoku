@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
 
 	char *helpstring = "Usage: sudoku [OPTION]\n"
 					   "  -i, --input		input the board in text\n"
-					   "  -q, --quiet		reduce verbosity of instructional in input\n"
+					   "  -q, --quiet		reduce verbosity of instructional text in input\n"
 					   "  -h, --help		display this help and exit\n"
 					   "      --debug		run solve on a test board\n"
 					   "\nSource: <https://github.com/Jythonscript/sudoku>";
