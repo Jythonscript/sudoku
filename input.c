@@ -32,6 +32,7 @@ char **readBoard(const char quiet) {
 			}
 			i++;
 		}
+		free(input);
 	}
 	return board;
 }
