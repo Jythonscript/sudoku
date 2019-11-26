@@ -5,13 +5,34 @@
 #define COLUMNS 9
 #define ROWS 9
 
+#define COLOR "\033[0;31m"
+#define NOCOLOR "\033[0m"
+
 void fillZeroes(int* list, int length);
 
-void printBoard(char **myBoard) {
+// print board
+void printBoard(char **board) {
+
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			printf("%d ", board[i][j]);
+		}
+		putchar('\n');
+	}
+}
+
+// print solvedBoard with colored numbers that were originally blank
+void printBoardDiff(char **firstBoard, char **solvedBoard) {
 	
 	for (int i = 0; i < ROWS; i++) {
 		for (int j = 0; j < COLUMNS; j++) {
-			printf("%d ", myBoard[i][j]);
+			if (firstBoard[i][j] == 0) {
+				fputs(COLOR, stdout);
+			}
+			printf("%d ", solvedBoard[i][j]);
+			if (firstBoard[i][j] == 0) {
+				fputs(NOCOLOR, stdout);
+			}
 		}
 		putchar('\n');
 	}
@@ -294,5 +315,4 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved)
 	}
 
 	return board;
-
 }
