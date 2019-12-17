@@ -13,63 +13,136 @@ void fillZeroes(int* list, int length);
 // print board
 void printBoard(char **board) {
 
+	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
+		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+			fputs("┬", stdout);
+		}
+		else if (k == 0) {
+			fputs("┌", stdout);
+		}
+		else if (k == COLUMNS * 2 + 6) {
+			fputs("┐", stdout);
+		}
+		else {
+			fputs("─", stdout);
+		}
+	}
+	putchar('\n');
 	for (int i = 0; i < ROWS; i++) {
 		// print horizontal board lines
 		if (i != 0 && i % 3 == 0) {
-			for (int k = 0; k < COLUMNS * 2 + 3; k++) {
-				if (k != 0 && k == (COLUMNS / 3) * 2 || k == (COLUMNS / 3) * 4 + 2) {
+			fputs("├", stdout);
+			for (int k = 0; k < COLUMNS * 2 + 5; k++) {
+				if (k != 0 && k == (COLUMNS / 3) * 2 + 1 || k == (COLUMNS / 3) * 4 + 3) {
 					fputs("┼", stdout);
 				}
 				else {
 					fputs("─", stdout);
 				}
 			}
+			fputs("┤", stdout);
 			putchar('\n');
 		}
+		fputs("│ ", stdout);
 		for (int j = 0; j < COLUMNS; j++) {
 			// print vertical board lines
 			if (j != 0 && j % 3 == 0) {
 				fputs("│ ", stdout);
 			}
-			printf("%d ", board[i][j]);
+			printf("%d", board[i][j]);
+			if (j != COLUMNS - 1) {
+				putchar(' ');
+			}
 		}
+		fputs(" │", stdout);
 		putchar('\n');
 	}
+	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
+		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+			fputs("┴", stdout);
+		}
+		else if (k == 0) {
+			fputs("└", stdout);
+		}
+		else if (k == COLUMNS * 2 + 6) {
+			fputs("┘", stdout);
+		}
+		else {
+			fputs("─", stdout);
+		}
+	}
+	putchar('\n');
 }
 
 // print solvedBoard with colored numbers that were originally blank
 void printBoardDiff(char **firstBoard, char **solvedBoard) {
-	
+
+	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
+		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+			fputs("┬", stdout);
+		}
+		else if (k == 0) {
+			fputs("┌", stdout);
+		}
+		else if (k == COLUMNS * 2 + 6) {
+			fputs("┐", stdout);
+		}
+		else {
+			fputs("─", stdout);
+		}
+	}
+	putchar('\n');
 	for (int i = 0; i < ROWS; i++) {
 		// print horizontal board lines
 		if (i != 0 && i % 3 == 0) {
-			for (int k = 0; k < COLUMNS * 2 + 3; k++) {
-				if (k != 0 && k == (COLUMNS / 3) * 2 || k == (COLUMNS / 3) * 4 + 2) {
+			fputs("├", stdout);
+			for (int k = 0; k < COLUMNS * 2 + 5; k++) {
+				if (k != 0 && k == (COLUMNS / 3) * 2 + 1 || k == (COLUMNS / 3) * 4 + 3) {
 					fputs("┼", stdout);
 				}
 				else {
 					fputs("─", stdout);
 				}
 			}
+			fputs("┤", stdout);
 			putchar('\n');
 		}
+		fputs("│ ", stdout);
 		for (int j = 0; j < COLUMNS; j++) {
 			// print vertical board lines
 			if (j != 0 && j % 3 == 0) {
 				fputs("│ ", stdout);
 			}
-
 			// print current number
 			if (firstBoard[i][j] == 0) {
 				fputs(COLOR, stdout);
 			}
-			printf("%d ", solvedBoard[i][j]);
+			printf("%d", solvedBoard[i][j]);
 			if (firstBoard[i][j] == 0) {
 				fputs(NOCOLOR, stdout);
 			}
+			if (j != COLUMNS - 1) {
+				putchar(' ');
+			}
 		}
+		fputs(" │", stdout);
 		putchar('\n');
 	}
+	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
+		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+			fputs("┴", stdout);
+		}
+		else if (k == 0) {
+			fputs("└", stdout);
+		}
+		else if (k == COLUMNS * 2 + 6) {
+			fputs("┘", stdout);
+		}
+		else {
+			fputs("─", stdout);
+		}
+	}
+	putchar('\n');
 }
 
 // set board[x][y] to value, if it is not out-of-bounds
