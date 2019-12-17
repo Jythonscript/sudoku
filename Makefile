@@ -9,6 +9,7 @@ OFILES := $(CFILES:%.c=$(BUILD)/%.o)
 IDIR=./
 CC=gcc
 CFLAGS=-I $(IDIR) -O3
+CFLAGS += `pkg-config --cflags --libs gtk+-3.0`
 LFLAGS=-lreadline
 
 .PHONY: all clean
