@@ -5,6 +5,16 @@
 #include "input.h"
 #include "sudoku.h"
 
+static void activate(GtkApplication *app, gpointer user_data) {
+	GtkWidget *window;
+	
+	window = gtk_application_window_new(app);
+	gtk_window_set_title(GTK_WINDOW (window), "Sudoku");
+	gtk_window_set_default_size(GTK_WINDOW (window), 200, 200);
+
+	gtk_widget_show_all(window);
+}
+
 int main(int argc, char **argv) {
 
 	char *helpstring = "Usage: sudoku [OPTION]\n"
@@ -21,11 +31,7 @@ int main(int argc, char **argv) {
 	char quiet = 0;
 	char debug = 0;
 	char color = 0;
-
-	if (argc == 1) {
-		puts(helpstring);
-		return 0;
-	}
+	char window = (argc == 1) ? (1) : (0);
 
 	// getopts
 	while (1) {
@@ -63,6 +69,7 @@ int main(int argc, char **argv) {
 				debug = 1;
 				break;
 			case '?':
+				fprintf(stderr, "Error in parsing options\n");
 				return 1;
 			default:
 				printf("No argument\n");
@@ -129,6 +136,17 @@ int main(int argc, char **argv) {
 		// free allocated memory
 		deleteBoard(board);
 		deleteBoard(originalBoard);
+	}
+	// start GTK application if no command-line flags, like input or debug
+	else if (window){
+		puts("Ran GTK app");
+		GtkApplication *app;
+		int status;
+
+		app = gtk_application_new("org.github.jythonscript.sudoku", G_APPLICATION_FLAGS_NONE);
+		g_signal_connect(app, "activate", G_CALLBACK (activate), NULL);
+		status = g_application_run(G_APPLICATION (app), argc, argv);
+		g_object_unref(app);
 	}
 
 	return 0;
