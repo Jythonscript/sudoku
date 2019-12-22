@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <gtk/gtk.h>
 #include "input.h"
 #include "sudoku.h"
+#include "window.h"
 
 int main(int argc, char **argv) {
 
@@ -20,11 +22,7 @@ int main(int argc, char **argv) {
 	char quiet = 0;
 	char debug = 0;
 	char color = 0;
-
-	if (argc == 1) {
-		puts(helpstring);
-		return 0;
-	}
+	char window = (argc == 1) ? (1) : (0);
 
 	// getopts
 	while (1) {
@@ -62,6 +60,7 @@ int main(int argc, char **argv) {
 				debug = 1;
 				break;
 			case '?':
+				fprintf(stderr, "Error in parsing options\n");
 				return 1;
 			default:
 				printf("No argument\n");
@@ -128,6 +127,11 @@ int main(int argc, char **argv) {
 		// free allocated memory
 		deleteBoard(board);
 		deleteBoard(originalBoard);
+	}
+	// start GTK application if no command-line flags, like input or debug
+	else if (window){
+		puts("Ran GTK app");
+		app_new(argc, argv);
 	}
 
 	return 0;
