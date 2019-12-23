@@ -13,7 +13,13 @@ void solve_button_clicked(GtkButton *button, gpointer user_data) {
 		}
 	}
 
-	solve(inputBoard);
+	int status = solve(inputBoard);
+
+	// stop if invalid board
+	if (status == 0) {
+		return;
+	}
+
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			char str[2];
