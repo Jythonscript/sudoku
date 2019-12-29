@@ -11,7 +11,7 @@
 void fillZeroes(int* list, int length);
 
 // print board
-void printBoard(char **board) {
+void printBoard(char **board, int zeroes) {
 
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
 		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
@@ -49,7 +49,14 @@ void printBoard(char **board) {
 			if (j != 0 && j % 3 == 0) {
 				fputs("│ ", stdout);
 			}
-			printf("%d", board[i][j]);
+
+			if (!zeroes && board[i][j] == 0) {
+				putchar(' ');
+			}
+			else {
+				printf("%d", board[i][j]);
+			}
+
 			if (j != COLUMNS - 1) {
 				putchar(' ');
 			}

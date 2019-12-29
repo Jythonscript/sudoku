@@ -13,7 +13,8 @@ int main(int argc, char **argv) {
 					   "  -q, --quiet		reduce verbosity of instructional text in input\n"
 					   "  -c, --color		print the board with the changed numbers colored in\n"
 					   "  -h, --help		display this help and exit\n"
-					   "      --debug		run solve on a test board\n"
+					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
+					   "  -d, --debug		run solve on a test board\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
 
@@ -22,6 +23,7 @@ int main(int argc, char **argv) {
 	char quiet = 0;
 	char debug = 0;
 	char color = 0;
+	char printZeroes = 0;
 	char window = (argc == 1) ? (1) : (0);
 
 	// getopts
@@ -33,11 +35,12 @@ int main(int argc, char **argv) {
 			{"color", no_argument, 0, 'c'},
 			{"help", no_argument, 0, 'h'},
 			{"debug", no_argument, 0, 'd'},
+			{"zeroes", no_argument, 0, 'z'},
 			{0, 0, 0, 0}
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "iqch", long_options, &option_index);
+		int c = getopt_long(argc, argv, "iqchdz", long_options, &option_index);
 
 		if (c == -1) {
 			break;
@@ -58,6 +61,9 @@ int main(int argc, char **argv) {
 				return 0;
 			case 'd':
 				debug = 1;
+				break;
+			case 'z':
+				printZeroes = 1;
 				break;
 			case '?':
 				fprintf(stderr, "Error in parsing options\n");
@@ -84,7 +90,7 @@ int main(int argc, char **argv) {
 		boardcpy(board, originalBoard, 9);
 		// show the original board, then solve it
 		printf("Initial board\n");
-		printBoard(board);
+		printBoard(board, printZeroes);
 
 		if (solve(board)) {
 			printf("\nSolved board\n");
@@ -92,7 +98,7 @@ int main(int argc, char **argv) {
 				printBoardDiff(originalBoard, board);
 			}
 			else {
-				printBoard(board);
+				printBoard(board, printZeroes);
 			}
 		}
 		else {
@@ -107,7 +113,7 @@ int main(int argc, char **argv) {
 
 		if (quiet == 0) {
 			printf("Entered board\n");
-			printBoard(board);
+			printBoard(board, printZeroes);
 			putchar('\n');
 		}
 
@@ -117,7 +123,7 @@ int main(int argc, char **argv) {
 				printBoardDiff(originalBoard, board);
 			}
 			else {
-				printBoard(board);
+				printBoard(board, printZeroes);
 			}
 		}
 		else {

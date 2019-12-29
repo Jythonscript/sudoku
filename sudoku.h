@@ -6,7 +6,7 @@ typedef  struct point {
 	char column;
 } point_t;
 
-void printBoard(char **board);
+void printBoard(char **board, int zeroes);
 void printBoardDiff(char **firstBoard, char **solvedBoard);
 void setValue(char **board, int row, int col, int value);
 int isValid(char **board);
