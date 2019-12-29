@@ -408,7 +408,7 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved,
 						pointStackSolve(board, stack, ptr, solved, zeroes);
 
 						//if the board is good, return it
-						if (*zeroes == 0 && isValid(board)) {
+						if ((*zeroes) == 0 && isValid(board)) {
 							*solved = 1;
 							return board;
 						}
