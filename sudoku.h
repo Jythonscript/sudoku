@@ -20,6 +20,6 @@ void revertBoard(char **board, point_t *stack, point_t **ptr);
 void pushPoint(point_t *point, point_t **ptr);
 int solve(char **board);
 void printStackInfo(point_t *stack, int length);
-char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved);
+char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved, int *zeroes);
 
 #endif //end SUDOKU_H header guard

@@ -351,15 +351,16 @@ void pushPoint(point_t *point, point_t **ptr) {
 // return 0 if the board is not solvable
 int solve(char **board) {
 
-	int zeroes = numZeroes(board);
+	int *zeroes = (int *) malloc(sizeof(int));
+	(*zeroes) = numZeroes(board);
 	
-	point_t *stack = (point_t *) malloc(sizeof(point_t) * zeroes);
+	point_t *stack = (point_t *) malloc(sizeof(point_t) * (*zeroes));
 	point_t *ptr = stack;
 	char *solved = (char *) malloc(sizeof(char));
 	*solved = 0;
 
 	// solve the board
-	pointStackSolve(board, stack, ptr, solved);
+	pointStackSolve(board, stack, ptr, solved, zeroes);
 
 	//free memory
 	free(stack);
@@ -376,7 +377,7 @@ void printStackInfo(point_t *stack, int length) {
 }
 
 // return a solved board, using a stack of points to track the changes
-char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved) {
+char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved, int *zeroes) {
 
 	// if the board is good, return it
 	if (*solved) {
@@ -396,6 +397,7 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved)
 				myPoint->row = i;
 				myPoint->column = j;
 				pushPoint(myPoint, &ptr);
+				(*zeroes)--;
 				free(myPoint);
 
 				// replace zeroes with each number
@@ -403,10 +405,10 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved)
 					board[i][j] = k;
 					if (pointIsValid(board, i, j)) {
 						// keep going since the branch is good
-						pointStackSolve(board, stack, ptr, solved);
+						pointStackSolve(board, stack, ptr, solved, zeroes);
 
 						//if the board is good, return it
-						if (numZeroes(board) == 0 && isValid(board)) {
+						if (*zeroes == 0 && isValid(board)) {
 							*solved = 1;
 							return board;
 						}
@@ -419,6 +421,7 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved)
 	// revert the changes made by this iteration because it did not find the solved board
 	for (int i = 0; i < numChanges; i++) {
 		revertBoard(board, stack, &ptr);
+		(*zeroes)++;
 	}
 
 	return board;
