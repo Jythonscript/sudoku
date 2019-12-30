@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
 					   "When no options are specified, a GTK user interface is ran\n"
 					   "\n"
 					   "  -i, --input       input the board in text\n"
+					   "  -f, --file        get the board through a text file\n"
 					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
 					   "  -c, --color       print the board with the changed numbers colored in\n"
 					   "  -h, --help        display this help and exit\n"
@@ -22,6 +23,8 @@ int main(int argc, char **argv) {
 
 	// flags
 	char input = 0;
+	char useFile = 0;
+	char filename[30];
 	char quiet = 0;
 	char debug = 0;
 	char color = 0;
@@ -33,16 +36,17 @@ int main(int argc, char **argv) {
 
 		static struct option long_options[] = {
 			{"input", no_argument, 0, 'i'},
+			{"file", required_argument, 0, 'f'},
 			{"quiet", no_argument, 0, 'q'},
 			{"color", no_argument, 0, 'c'},
 			{"help", no_argument, 0, 'h'},
-			{"debug", no_argument, 0, 'd'},
 			{"zeroes", no_argument, 0, 'z'},
+			{"debug", no_argument, 0, 'd'},
 			{0, 0, 0, 0}
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "iqchdz", long_options, &option_index);
+		int c = getopt_long(argc, argv, "f:iqchdz", long_options, &option_index);
 
 		if (c == -1) {
 			break;
@@ -51,6 +55,10 @@ int main(int argc, char **argv) {
 		switch (c) {
 			case 'i':
 				input = 1;
+				break;
+			case 'f':
+				useFile = 1;
+				strncpy(filename, optarg, 30);
 				break;
 			case 'q':
 				quiet = 1;
@@ -68,7 +76,6 @@ int main(int argc, char **argv) {
 				printZeroes = 1;
 				break;
 			case '?':
-				fprintf(stderr, "Error in parsing options\n");
 				return 1;
 			default:
 				printf("No argument\n");
@@ -140,6 +147,35 @@ int main(int argc, char **argv) {
 	else if (window){
 		puts("Ran GTK app");
 		app_new(argc, argv);
+	}
+	else if (useFile) {
+
+		char **board = fileBoard(filename);
+		char **originalBoard = createBoard();
+		boardcpy(board, originalBoard, 9);
+
+		if (quiet == 0) {
+			printf("Original board\n");
+			printBoard(board, printZeroes);
+			putchar('\n');
+		}
+
+		if (isValid(board) && solve(board)) {
+			printf("Solved board\n");
+			if (color) {
+				printBoardDiff(originalBoard, board);
+			}
+			else {
+				printBoard(board, printZeroes);
+			}
+		}
+		else {
+			fprintf(stderr, "The board is not solvable\n");
+		}
+
+		// free allocated memory
+		deleteBoard(board);
+		deleteBoard(originalBoard);
 	}
 
 	return 0;

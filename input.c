@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <readline/readline.h>
 #include <stdlib.h>
-
 #include "sudoku.h"
 
 char **readBoard(const char quiet) {
@@ -33,6 +32,40 @@ char **readBoard(const char quiet) {
 			i++;
 		}
 		free(input);
+	}
+	return board;
+}
+
+char **fileBoard(char *filename) {
+
+	int row = 0;
+	int col = 0;
+	char c;
+
+	char **board = createBoard();
+
+	FILE *fp = fopen(filename, "r");
+	if (fp == NULL) {
+		fprintf(stderr, "Cannot open file %s for reading", filename);
+	}
+	else {
+		while ((c = getc(fp)) != EOF && row < 9) {
+
+			if (c == '\n') {
+				row++;
+				col = 0;
+				continue;
+			}
+
+			// insert digits into board
+			char currentchar[1] = "0";
+			currentchar[0] = c;
+			if (col < 9) {
+				board[row][col] = atoi(currentchar);
+			}
+
+			col++;
+		}
 	}
 	return board;
 }
