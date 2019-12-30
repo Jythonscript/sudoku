@@ -320,7 +320,7 @@ void boardcpy(char **arr1, char **arr2, int n) {
 // return a pointer to a new board
 char **createBoard() {
 	
-	char *values = (char *) malloc(sizeof(char) * 9 * 9);
+	char *values = (char *) calloc(9*9, sizeof(char));
 	char **board = (char **) malloc(sizeof(char *) * 9);
 
 	// set up the board array with pointers to values
