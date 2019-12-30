@@ -9,6 +9,8 @@
 int main(int argc, char **argv) {
 
 	char *helpstring = "Usage: sudoku [OPTION]\n"
+					   "When no options are specified, a GTK user interface is ran\n"
+					   "\n"
 					   "  -i, --input		input the board in text\n"
 					   "  -q, --quiet		reduce verbosity of instructional text in input\n"
 					   "  -c, --color		print the board with the changed numbers colored in\n"
