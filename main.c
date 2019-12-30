@@ -11,12 +11,12 @@ int main(int argc, char **argv) {
 	char *helpstring = "Usage: sudoku [OPTION]\n"
 					   "When no options are specified, a GTK user interface is ran\n"
 					   "\n"
-					   "  -i, --input		input the board in text\n"
-					   "  -q, --quiet		reduce verbosity of instructional text in input\n"
-					   "  -c, --color		print the board with the changed numbers colored in\n"
-					   "  -h, --help		display this help and exit\n"
+					   "  -i, --input       input the board in text\n"
+					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
+					   "  -c, --color       print the board with the changed numbers colored in\n"
+					   "  -h, --help        display this help and exit\n"
 					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
-					   "  -d, --debug		run solve on a test board\n"
+					   "  -d, --debug       run solve on a test board\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
 
