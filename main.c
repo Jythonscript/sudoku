@@ -11,13 +11,13 @@ int main(int argc, char **argv) {
 	char *helpstring = "Usage: sudoku [OPTION]\n"
 					   "When no options are specified, a GTK user interface is ran\n"
 					   "\n"
-					   "  -i, --input       input the board in text\n"
-					   "  -f, --file        get the board through a text file\n"
-					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
 					   "  -c, --color       print the board with the changed numbers colored in\n"
-					   "  -h, --help        display this help and exit\n"
-					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
 					   "  -d, --debug       run solve on a test board\n"
+					   "  -f, --file        get the board through a text file\n"
+					   "  -h, --help        display this help and exit\n"
+					   "  -i, --input       input the board in text\n"
+					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
+					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
 
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "f:iqchdz", long_options, &option_index);
+		int c = getopt_long(argc, argv, "f:cdhiqz", long_options, &option_index);
 
 		if (c == -1) {
 			break;
