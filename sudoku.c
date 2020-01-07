@@ -350,7 +350,6 @@ void pushPoint(point_t *point, point_t **ptr) {
 	(*ptr)->row = point->row;
 	(*ptr)->column = point->column;
 	(*ptr)++;
-	//ptr++;
 }
 
 // wrapper for pointStackSolve that sets up the stack and pointer

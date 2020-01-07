@@ -1,10 +1,14 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
-typedef  struct point {
+typedef struct point {
 	char row;
 	char column;
 } point_t;
+
+typedef struct numbers {
+	char nums[9];
+} nums_t;
 
 void printBoard(char **board, int zeroes);
 void printBoardDiff(char **firstBoard, char **solvedBoard);
