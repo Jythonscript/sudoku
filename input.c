@@ -46,7 +46,7 @@ char **fileBoard(char *filename) {
 
 	FILE *fp = fopen(filename, "r");
 	if (fp == NULL) {
-		fprintf(stderr, "Cannot open file %s for reading", filename);
+		fprintf(stderr, "Cannot open file %s for reading\n", filename);
 	}
 	else {
 		while ((c = getc(fp)) != EOF && row < 9) {
