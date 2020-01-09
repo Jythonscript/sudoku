@@ -337,6 +337,51 @@ void deleteBoard(char **board) {
 	free(board);
 }
 
+// return a pointer to a new nums 2d array
+nums_t **createNums() {
+	
+	nums_t *values = (nums_t *) malloc(sizeof(nums_t) * COLUMNS * ROWS);
+	nums_t **nums = (nums_t **) malloc(sizeof(nums_t *) * COLUMNS);
+
+	for (int i = 0; i < ROWS; i++) {
+		nums[i] = (values + (i * 9));
+	}
+
+	// fill with 1s
+	for (int row = 0; row < ROWS; row++) {
+		for (int col = 0; col < COLUMNS; col++) {
+			for (int i = 0; i < 9; i++) {
+				nums[row][col].n[i] = 1;
+			}
+		}
+	}
+
+	return nums;
+}
+
+void deleteNums(nums_t **nums) {
+	
+	free(*nums);
+	free(nums);
+}
+
+// print each value in nums
+void printNums(nums_t **nums) {
+	
+	for (int row = 0; row < ROWS; row++) {
+		for (int i = 0; i < 3; i++) {
+			for (int col = 0; col < COLUMNS; col++) {
+				for (int j = 0; j < 3; j++) {
+					printf("%d", nums[row][col].n[(i * 3) + j]);
+				}
+				putchar(' ');
+			}
+			putchar('\n');
+		}
+		putchar('\n');
+	}
+}
+
 // revert the board by the latest point on the stack
 void revertBoard(char **board, point_t *stack, point_t **ptr) {
 
@@ -357,18 +402,23 @@ void pushPoint(point_t *point, point_t **ptr) {
 // return 0 if the board is not solvable
 int solve(char **board) {
 
+	// simplify the board and set up nums
+	nums_t **nums = simplify(board);
+
+	// get the number of zeroes
 	int *zeroes = (int *) malloc(sizeof(int));
 	(*zeroes) = numZeroes(board);
 	
+	// set up the stack
 	point_t *stack = (point_t *) malloc(sizeof(point_t) * (*zeroes));
 	point_t *ptr = stack;
 	char *solved = (char *) malloc(sizeof(char));
 	*solved = 0;
 
 	// solve the board
-	pointStackSolve(board, stack, ptr, solved, zeroes);
+	pointStackSolve(board, nums, stack, ptr, solved, zeroes);
 
-	//free memory
+	// free memory
 	free(stack);
 	free(solved);
 	return isValid(board);
@@ -383,7 +433,7 @@ void printStackInfo(point_t *stack, int length) {
 }
 
 // return a solved board, using a stack of points to track the changes
-char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved, int *zeroes) {
+char **pointStackSolve(char **board, nums_t **nums, point_t *stack, point_t *ptr, char *solved, int *zeroes) {
 
 	// if the board is good, return it
 	if (*solved) {
@@ -393,27 +443,30 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved,
 	int numChanges = 0;
 	
 	// try each branch
-	for (int i = 0; i < ROWS; i++) {
-		for (int j = 0; j < COLUMNS; j++) {
+	for (int row = 0; row < ROWS; row++) {
+		for (int col = 0; col < COLUMNS; col++) {
 			// find zeroes
-			if (board[i][j] == 0) {
+			if (board[row][col] == 0) {
 				// save each change on the stack
 				numChanges++;
 				point_t *myPoint = (point_t *) malloc(sizeof(point_t));
-				myPoint->row = i;
-				myPoint->column = j;
+				myPoint->row = row;
+				myPoint->column = col;
 				pushPoint(myPoint, &ptr);
 				(*zeroes)--;
 				free(myPoint);
 
-				// replace zeroes with each number
+				// replace zeroes with each number, if they are a possiblility
 				for (int k = 1; k <= COLUMNS; k++) {
-					board[i][j] = k;
-					if (pointIsValid(board, i, j)) {
-						// keep going since the branch is good
-						pointStackSolve(board, stack, ptr, solved, zeroes);
 
-						//if the board is good, return it
+					board[row][col] = k;
+
+					// do not try values that are not possibilities
+					if (nums[row][col].n[k - 1] == 1 && pointIsValid(board, row, col)) {
+						// keep going since the branch is good
+						pointStackSolve(board, nums, stack, ptr, solved, zeroes);
+
+						// if the board is good, return it
 						if ((*zeroes) == 0 && isValid(board)) {
 							*solved = 1;
 							return board;
@@ -431,4 +484,110 @@ char **pointStackSolve(char **board, point_t *stack, point_t *ptr, char *solved,
 	}
 
 	return board;
+}
+
+// set each number in row to the given value, skipping the given column
+void setRow(nums_t **nums, int row, int number, char value) {
+	
+	for (int col = 0; col < COLUMNS; col++) {
+		nums[row][col].n[number - 1] = value;
+	}
+}
+
+// set each number in column to the given value, skipping the given row
+void setColumn(nums_t **nums, int col, int number, char value) {
+	
+	for (int row = 0; row < ROWS; row++) {
+		nums[row][col].n[number - 1] = value;
+	}
+}
+
+// set each number in the given 3 by 3 square to the given value
+// row and col correspond to a point in the 3 by 3 square to change
+void setSquare(nums_t **nums, int row, int col, int number, char value) {
+	
+	int startRow = row - (row % 3);
+	int startCol = col - (col % 3);
+	for (int row = startRow; row < startRow + 3; row++) {
+		for (int col = startCol; col < startCol + 3; col++) {
+			nums[row][col].n[number - 1] = value;
+		}
+	}
+}
+
+// set all values other than the given value to "set" in the given row and column
+void setOtherNums(nums_t **nums, int row, int col, char value, char set) {
+	
+	for (int i = 0; i < 9; i++) {
+		if (i != (value - 1)) {
+			nums[row][col].n[i] = set;
+		}
+	}
+}
+
+// return the value of the only possiblility at the row and column, if possible
+// return -1 if not possible
+int getSingleOption(nums_t **nums, int row, int col) {
+
+	if (row >= 9 || col >= 9) {
+		fputs("Out of bounds index in getSingleOption\n", stderr);
+		return -1;
+	}
+	
+	char index = -1;
+	char foundNonzero = 0;
+	for (int i = 0; i < 9; i++) {
+		if (nums[row][col].n[i] != 0) {
+			if (foundNonzero == 1) {
+				return -1;
+			}
+			index = i;
+			foundNonzero = 1;
+		}
+	}
+	return index + 1;
+}
+
+// simplify the board by cancelling out possible values, and return a 2d array of possible values for each position
+// nums must be freed later
+nums_t** simplify(char **board) {
+
+	nums_t **nums = createNums();
+
+	int foundSimplify = 1;
+
+	while (foundSimplify) {
+
+		foundSimplify = 0;
+		// update nums
+		for (int row = 0; row < ROWS; row++) {
+			for (int col = 0; col < COLUMNS; col++) {
+				if (board[row][col] != 0) {
+
+					setSquare(nums, row, col, board[row][col], 0);
+					setRow(nums, row, board[row][col], 0);
+					setColumn(nums, col, board[row][col], 0);
+					nums[row][col].n[board[row][col] - 1] = 1;
+					setOtherNums(nums, row, col, board[row][col], 0);
+				}
+			}
+		}
+
+		// fill out nums that were solved definitely
+		for (int row = 0; row < ROWS; row++) {
+			for (int col = 0; col < COLUMNS; col++) {
+				if (board[row][col] == 0) {
+
+					// simplify board if an option has been found
+					int option;
+					if ((option = getSingleOption(nums, row, col)) != -1) {
+						board[row][col] = option;
+						foundSimplify = 1;
+					}
+				}
+			}
+		}
+	}
+
+	return nums;
 }
