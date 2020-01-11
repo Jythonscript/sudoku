@@ -11,13 +11,18 @@ int main(int argc, char **argv) {
 	char *helpstring = "Usage: sudoku [OPTION]\n"
 					   "When no options are specified, a GTK user interface is ran\n"
 					   "\n"
+					   "Input control:\n"
+					   "  -f, --file        input the board through the specified text file\n"
+					   "  -i, --input       input the board through readline\n"
+					   "\n"
+					   "Output control:\n"
 					   "  -c, --color       print the board with the changed numbers colored in\n"
-					   "  -d, --debug       run solve on a test board\n"
-					   "  -f, --file        get the board through a text file\n"
-					   "  -h, --help        display this help and exit\n"
-					   "  -i, --input       input the board in text\n"
 					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
 					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
+					   "\n"
+					   "Miscellaneous:\n"
+					   "  -d, --debug       run the solve function on a test board\n"
+					   "  -h, --help        display this help and exit\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
 
@@ -84,8 +89,8 @@ int main(int argc, char **argv) {
 	}
 
 	if (debug) {
-		char newBoard[9][9] = {{7,6,0,0,2,0,9,0,0}, {0,0,4,0,0,0,0,2,0}, {8,0,0,0,0,4,0,0,3}, {0,2,8,0,0,1,3,0,7}, {6,3,1,0,7,0,4,8,2}, {4,0,7,8,0,0,5,6,0}, {2,0,0,5,0,0,0,0,6}, {0,8,0,0,0,0,7,0,0}, {0,0,5,0,8,0,0,4,9}};
-		//char newBoard[9][9] = {{0,0,2,1,0,5,0,6,0}, {9,0,5,4,0,0,3,0,0}, {0,0,1,0,2,9,0,0,0}, {0,0,4,0,0,0,0,1,0}, {8,0,0,9,0,2,0,0,6}, {0,0,0,0,0,0,2,0,0}, {0,0,0,0,5,0,0,0,0}, {0,0,7,0,0,6,1,0,2}, {0,1,0,3,0,4,8,0,0}};
+		//char newBoard[9][9] = {{7,6,0,0,2,0,9,0,0}, {0,0,4,0,0,0,0,2,0}, {8,0,0,0,0,4,0,0,3}, {0,2,8,0,0,1,3,0,7}, {6,3,1,0,7,0,4,8,2}, {4,0,7,8,0,0,5,6,0}, {2,0,0,5,0,0,0,0,6}, {0,8,0,0,0,0,7,0,0}, {0,0,5,0,8,0,0,4,9}};
+		char newBoard[9][9] = {{0,0,2,1,0,5,0,6,0}, {9,0,5,4,0,0,3,0,0}, {0,0,1,0,2,9,0,0,0}, {0,0,4,0,0,0,0,1,0}, {8,0,0,9,0,2,0,0,6}, {0,0,0,0,0,0,2,0,0}, {0,0,0,0,5,0,0,0,0}, {0,0,7,0,0,6,1,0,2}, {0,1,0,3,0,4,8,0,0}};
 		//char newBoard[9][9] = {{9, 6, 4, 1, 2, 7, 3, 8, 5}, {7, 3, 5, 6, 9, 8, 4, 1, 2}, {8, 1, 2, 3, 4, 5, 9, 7, 6}, {6, 2, 9, 7, 8, 1, 5, 3, 4}, {4, 8, 1, 5, 3, 2, 7, 6, 9}, {3, 5, 7, 4, 6, 9, 1, 2, 8}, {5, 9, 3, 8, 7, 6, 2, 4, 1}, {2, 4, 6, 9, 1, 3, 8, 5, 7}, {1, 7, 8, 2, 5, 4, 6, 9, 3}};
 
 		// put the board into the heap so it can be passed as a parameter
