@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
 		boardcpy(board, originalBoard, 9);
 		// show the original board, then solve it
 		printf("Initial board\n");
-		printBoard(board, printZeroes);
+		printBoard(originalBoard, printZeroes);
 
 		if (solve(board)) {
 			printf("\nSolved board\n");
@@ -119,6 +119,7 @@ int main(int argc, char **argv) {
 			printf("The board is not solvable\n");
 		}
 		deleteBoard(board);
+		deleteBoard(originalBoard);
 	}
 	else if (input) {
 		char **board = readBoard(quiet);

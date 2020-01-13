@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "sudoku.h"
 
+// return a board that was read from readline
 char **readBoard(const char quiet) {
 	
 	char **board = createBoard();
@@ -36,6 +37,7 @@ char **readBoard(const char quiet) {
 	return board;
 }
 
+// return a board that was read from a file
 char **fileBoard(char *filename) {
 
 	int row = 0;

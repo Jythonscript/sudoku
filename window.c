@@ -27,6 +27,7 @@ void solve_button_clicked(GtkButton *button, gpointer user_data) {
 			gtk_entry_set_text((GtkEntry *)boxes[i][j], str);
 		}
 	}
+	deleteBoard(inputBoard);
 }
 
 void reset_button_clicked(GtkButton *button, gpointer user_data) {
