@@ -14,7 +14,7 @@ void fillZeroes(int* list, int length);
 void printBoard(char **board, int zeroes) {
 
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
-		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+		if ((k != 0 && k == (COLUMNS / 3) * 2 + 2) || (k == (COLUMNS / 3) * 4 + 4)) {
 			fputs("┬", stdout);
 		}
 		else if (k == 0) {
@@ -33,7 +33,7 @@ void printBoard(char **board, int zeroes) {
 		if (i != 0 && i % 3 == 0) {
 			fputs("├", stdout);
 			for (int k = 0; k < COLUMNS * 2 + 5; k++) {
-				if (k != 0 && k == (COLUMNS / 3) * 2 + 1 || k == (COLUMNS / 3) * 4 + 3) {
+				if ((k != 0 && k == (COLUMNS / 3) * 2 + 1) || (k == (COLUMNS / 3) * 4 + 3)) {
 					fputs("┼", stdout);
 				}
 				else {
@@ -65,7 +65,7 @@ void printBoard(char **board, int zeroes) {
 		putchar('\n');
 	}
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
-		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+		if ((k != 0 && k == (COLUMNS / 3) * 2 + 2) || (k == (COLUMNS / 3) * 4 + 4)) {
 			fputs("┴", stdout);
 		}
 		else if (k == 0) {
@@ -85,7 +85,7 @@ void printBoard(char **board, int zeroes) {
 void printBoardDiff(char **firstBoard, char **solvedBoard) {
 
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
-		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+		if ((k != 0 && k == (COLUMNS / 3) * 2 + 2) || (k == (COLUMNS / 3) * 4 + 4)) {
 			fputs("┬", stdout);
 		}
 		else if (k == 0) {
@@ -104,7 +104,7 @@ void printBoardDiff(char **firstBoard, char **solvedBoard) {
 		if (i != 0 && i % 3 == 0) {
 			fputs("├", stdout);
 			for (int k = 0; k < COLUMNS * 2 + 5; k++) {
-				if (k != 0 && k == (COLUMNS / 3) * 2 + 1 || k == (COLUMNS / 3) * 4 + 3) {
+				if ((k != 0 && k == (COLUMNS / 3) * 2 + 1) || (k == (COLUMNS / 3) * 4 + 3)) {
 					fputs("┼", stdout);
 				}
 				else {
@@ -136,7 +136,7 @@ void printBoardDiff(char **firstBoard, char **solvedBoard) {
 		putchar('\n');
 	}
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
-		if (k != 0 && k == (COLUMNS / 3) * 2 + 2 || k == (COLUMNS / 3) * 4 + 4) {
+		if ((k != 0 && k == (COLUMNS / 3) * 2 + 2) || (k == (COLUMNS / 3) * 4 + 4)) {
 			fputs("┴", stdout);
 		}
 		else if (k == 0) {
