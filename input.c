@@ -22,7 +22,7 @@ char **readBoard(const char quiet) {
 
 		int i = 0;
 		int chars = 0;
-		char currentChar[1] = "0";
+		char currentChar[2] = "0";
 
 		while (chars < 9 && input[i] != EOF && input[i] != '\0') {
 			currentChar[0] = input[i];
@@ -60,7 +60,7 @@ char **fileBoard(char *filename) {
 			}
 
 			// insert digits into board
-			char currentchar[1] = "0";
+			char currentchar[2] = "0";
 			currentchar[0] = c;
 			if (col < 9) {
 				board[row][col] = atoi(currentchar);
