@@ -13,6 +13,8 @@ void solve_button_clicked(GtkButton *button, gpointer user_data) {
 		}
 	}
 
+	boardcpy(inputBoard, unsolvedBoard, 9);
+
 	int status = solve(inputBoard);
 
 	// stop if invalid board
@@ -40,11 +42,55 @@ void reset_button_clicked(GtkButton *button, gpointer user_data) {
 }
 
 void exit_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("exit button clicked");
 	exit(0);
+}
+
+void unsolve_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("unsolve button clicked");
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			char str[2];
+			sprintf(str, "%d", unsolvedBoard[i][j]);
+			if (str[0] == '0') {
+				gtk_entry_set_text((GtkEntry *)boxes[i][j], "");
+			}
+			else {
+				gtk_entry_set_text((GtkEntry *)boxes[i][j], str);
+			}
+		}
+	}
+}
+
+void hint_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("hint button clicked");
+
+	char **inputBoard = createBoard();
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			// TODO - add safety check to ensure valid characters
+			char *temp = g_strndup(gtk_entry_get_text((GtkEntry *)boxes[i][j]), 1);
+			inputBoard[i][j] = (char) atoi(temp);
+		}
+	}
+
+	hint_t *hint = getHint(inputBoard);
+
+	if (hint->value != -1) {
+
+		char str[2];
+		sprintf(str, "%d", hint->value);
+		gtk_entry_set_text((GtkEntry *)boxes[hint->row][hint->column], str);
+	}
+	deleteHint(hint);
+
+	deleteBoard(inputBoard);
 }
 
 // set up widgets onto window
 static void activate(GtkApplication *app, gpointer user_data) {
+	// set up board for undoing solve
+	unsolvedBoard = createBoard();
 	// widgets
 	GtkWidget *window;
 	GtkWidget *fixed;
@@ -55,6 +101,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
 	GtkWidget *solveButton;
 	GtkWidget *resetButton;
 	GtkWidget *exitButton;
+	GtkWidget *hintButton;
+	GtkWidget *unsolveButton;
 
 	// set up 2d array for boxes
 	boxes = (GtkWidget ***) malloc(sizeof(GtkWidget **) * 9);
@@ -134,6 +182,20 @@ static void activate(GtkApplication *app, gpointer user_data) {
 	g_signal_connect(GTK_BUTTON(exitButton),
 			"clicked",
 			G_CALLBACK(exit_button_clicked),
+			G_OBJECT(window));
+
+	unsolveButton = gtk_button_new_with_label("Unsolve");
+	gtk_grid_attach(GTK_GRID(gridMain), unsolveButton, 0, 4, 1, 1);
+	g_signal_connect(GTK_BUTTON(unsolveButton),
+			"clicked",
+			G_CALLBACK(unsolve_button_clicked),
+			G_OBJECT(window));
+
+	hintButton = gtk_button_new_with_label("Hint");
+	gtk_grid_attach(GTK_GRID(gridMain), hintButton, 1, 4, 1, 1);
+	g_signal_connect(GTK_BUTTON(hintButton),
+			"clicked",
+			G_CALLBACK(hint_button_clicked),
 			G_OBJECT(window));
 
 	gtk_widget_show_all(window);

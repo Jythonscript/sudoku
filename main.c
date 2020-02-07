@@ -18,10 +18,11 @@ int main(int argc, char **argv) {
 					   "Output control:\n"
 					   "  -c, --color       print the board with the changed numbers colored in\n"
 					   "  -q, --quiet       reduce verbosity of instructional text in input\n"
+					   "  -t, --hint        print only a hint to solving the board, then exit\n"
 					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
 					   "\n"
 					   "Miscellaneous:\n"
-					   "  -d, --debug       run the solve function on a test board\n"
+					   "  -d, --debug       run the solve function on a test board, for testing\n"
 					   "  -h, --help        display this help and exit\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
@@ -34,24 +35,26 @@ int main(int argc, char **argv) {
 	char debug = 0;
 	char color = 0;
 	char printZeroes = 0;
+	char hint = 0;
 	char window = (argc == 1) ? (1) : (0);
 
 	// getopts
 	while (1) {
 
 		static struct option long_options[] = {
-			{"input", no_argument, 0, 'i'},
 			{"file", required_argument, 0, 'f'},
+			{"input", no_argument, 0, 'i'},
 			{"quiet", no_argument, 0, 'q'},
 			{"color", no_argument, 0, 'c'},
-			{"help", no_argument, 0, 'h'},
+			{"hint", no_argument, 0, 't'},
 			{"zeroes", no_argument, 0, 'z'},
 			{"debug", no_argument, 0, 'd'},
+			{"help", no_argument, 0, 'h'},
 			{0, 0, 0, 0}
 		};
 
 		int option_index = 0;
-		int c = getopt_long(argc, argv, "f:cdhiqz", long_options, &option_index);
+		int c = getopt_long(argc, argv, "f:cdhiqzt", long_options, &option_index);
 
 		if (c == -1) {
 			break;
@@ -70,6 +73,9 @@ int main(int argc, char **argv) {
 				break;
 			case 'c':
 				color = 1;
+				break;
+			case 't':
+				hint = 1;
 				break;
 			case 'h':
 				puts(helpstring);
@@ -109,7 +115,7 @@ int main(int argc, char **argv) {
 		if (solve(board)) {
 			printf("\nSolved board\n");
 			if (color) {
-				printBoardDiff(originalBoard, board);
+				printBoardDiff(originalBoard, board, printZeroes);
 			}
 			else {
 				printBoard(board, printZeroes);
@@ -132,14 +138,28 @@ int main(int argc, char **argv) {
 			putchar('\n');
 		}
 
-		if (isValid(board) && solve(board)) {
+		if (hint == 0 && isValid(board) && solve(board)) {
 			printf("Solved board\n");
 			if (color) {
-				printBoardDiff(originalBoard, board);
+				printBoardDiff(originalBoard, board, printZeroes);
 			}
 			else {
 				printBoard(board, printZeroes);
 			}
+		}
+		else if (hint) {
+			char **firstBoard = createBoard();
+			boardcpy(board, firstBoard, 9);
+
+			hint_t *hint = getHint(board);
+
+			if (hint->value == -1) {
+				printf("No hint found\n");
+			}
+			else {
+				printBoardDiff(firstBoard, board, printZeroes);
+			}
+			deleteBoard(firstBoard);
 		}
 		else {
 			fprintf(stderr, "The board is not solvable\n");
@@ -148,11 +168,6 @@ int main(int argc, char **argv) {
 		// free allocated memory
 		deleteBoard(board);
 		deleteBoard(originalBoard);
-	}
-	// start GTK application if no command-line flags, like input or debug
-	else if (window){
-		puts("Ran GTK app");
-		app_new(argc, argv);
 	}
 	else if (useFile) {
 
@@ -166,14 +181,28 @@ int main(int argc, char **argv) {
 			putchar('\n');
 		}
 
-		if (isValid(board) && solve(board)) {
+		if (hint == 0 && isValid(board) && solve(board)) {
 			printf("Solved board\n");
 			if (color) {
-				printBoardDiff(originalBoard, board);
+				printBoardDiff(originalBoard, board, printZeroes);
 			}
 			else {
 				printBoard(board, printZeroes);
 			}
+		}
+		else if (hint) {
+			char **firstBoard = createBoard();
+			boardcpy(board, firstBoard, 9);
+
+			hint_t *hint = getHint(board);
+
+			if (hint->value == -1) {
+				printf("No hint found\n");
+			}
+			else {
+				printBoardDiff(firstBoard, board, printZeroes);
+			}
+			deleteBoard(firstBoard);
 		}
 		else {
 			fprintf(stderr, "The board is not solvable\n");
@@ -182,6 +211,11 @@ int main(int argc, char **argv) {
 		// free allocated memory
 		deleteBoard(board);
 		deleteBoard(originalBoard);
+	}
+	// start GTK application if no command-line arguments specified
+	else if (window){
+		puts("Ran GTK app");
+		app_new(argc, argv);
 	}
 
 	return 0;

@@ -82,7 +82,7 @@ void printBoard(char **board, int zeroes) {
 }
 
 // print solvedBoard with colored numbers that were originally blank
-void printBoardDiff(char **firstBoard, char **solvedBoard) {
+void printBoardDiff(char **firstBoard, char **solvedBoard, int zeroes) {
 
 	for (int k = 0; k < COLUMNS * 2 + 7; k++) {
 		if ((k != 0 && k == (COLUMNS / 3) * 2 + 2) || (k == (COLUMNS / 3) * 4 + 4)) {
@@ -121,11 +121,18 @@ void printBoardDiff(char **firstBoard, char **solvedBoard) {
 				fputs("│ ", stdout);
 			}
 			// print current number
-			if (firstBoard[i][j] == 0) {
+			if (firstBoard[i][j] == 0 && solvedBoard[i][j] != 0) {
 				fputs(COLOR, stdout);
 			}
-			printf("%d", solvedBoard[i][j]);
-			if (firstBoard[i][j] == 0) {
+
+			if (!zeroes && solvedBoard[i][j] == 0) {
+				putchar(' ');
+			}
+			else {
+				printf("%d", solvedBoard[i][j]);
+			}
+
+			if (firstBoard[i][j] == 0 && solvedBoard[i][j] != 0) {
 				fputs(NOCOLOR, stdout);
 			}
 			if (j != COLUMNS - 1) {
@@ -359,10 +366,27 @@ nums_t **createNums() {
 	return nums;
 }
 
+//free the memory allocated by the given nums 2d array
 void deleteNums(nums_t **nums) {
 	
 	free(*nums);
 	free(nums);
+}
+
+// return a pointer to a new hint with initialized values
+hint_t *createHint() {
+
+	hint_t *hint = malloc(sizeof(hint_t));
+	hint->row = -1;
+	hint->column = -1;
+	hint->value = -1;
+	return hint;
+}
+
+// free the memory allocated by the given hint
+void deleteHint(hint_t *hint) {
+
+	free(hint);
 }
 
 // print each value in nums
@@ -554,7 +578,8 @@ nums_t** simplify(char **board) {
 
 	nums_t **nums = createNums();
 
-	int foundSimplify = 1;
+	// boolean for checking when to stop
+	char foundSimplify = 1;
 
 	while (foundSimplify) {
 
@@ -590,4 +615,59 @@ nums_t** simplify(char **board) {
 	}
 
 	return nums;
+}
+
+// return a hint from the board, return null if none found
+hint_t* getHint(char **board) {
+
+	nums_t **nums = createNums();
+	hint_t *hint = createHint();
+
+	// boolean for checking when to stop
+	char foundSimplify = 1;
+
+	while (foundSimplify) {
+
+		foundSimplify = 0;
+		// update nums
+		for (int row = 0; row < ROWS; row++) {
+			for (int col = 0; col < COLUMNS; col++) {
+				if (board[row][col] != 0) {
+
+					setSquare(nums, row, col, board[row][col], 0);
+					setRow(nums, row, board[row][col], 0);
+					setColumn(nums, col, board[row][col], 0);
+					nums[row][col].n[board[row][col] - 1] = 1;
+					setOtherNums(nums, row, col, board[row][col], 0);
+				}
+			}
+		}
+
+		// fill out nums that were solved definitely
+		for (int row = 0; row < ROWS; row++) {
+			for (int col = 0; col < COLUMNS; col++) {
+				if (board[row][col] == 0) {
+
+					// simplify board if an option has been found
+					int option;
+					if ((option = getSingleOption(nums, row, col)) != -1) {
+						// modify the board
+						board[row][col] = option;
+
+						// return the hint
+						hint->row = row;
+						hint->column = col;
+						hint->value = option;
+
+						deleteNums(nums);
+						return hint;
+					}
+				}
+			}
+		}
+	}
+
+	deleteNums(nums);
+
+	return hint;
 }
