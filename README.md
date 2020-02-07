@@ -14,4 +14,4 @@ First, the program runs through the board and eliminates possibilities for what 
 The next phase of the solving algorithm uses a variant of brute-force to look through the remaining possible boards. There is only one board in memory at a time, so a preallocated stack is used to revert modifications to the board when a branch is found to be invalid.
 
 ## Future plans
-Future plans include to improve the solving algorithm, allowing for multiple threads to be used when solving, and implementing a hint system.
+Future plans include to improve the solving algorithm, allowing for multiple threads to be used when solving, and improving on the hint system.
