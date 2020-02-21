@@ -376,7 +376,7 @@ void deleteNums(nums_t **nums) {
 // return a pointer to a new hint with initialized values
 hint_t *createHint() {
 
-	hint_t *hint = malloc(sizeof(hint_t));
+	hint_t *hint = (hint_t *) malloc(sizeof(hint_t));
 	hint->row = -1;
 	hint->column = -1;
 	hint->value = -1;
