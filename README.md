@@ -6,6 +6,13 @@ This C program solves sudoku puzzles.
 * readline
 * GTK3
 
+## Make commands
+`make`: standard compilation
+
+`make debug`: compile with debugging information
+
+`make clean`: remove
+
 ## How it works
 This program uses a two-dimensional char array to represent the board, and uses a two-dimensional array of nine-char structs to represent the possible values that could be valid in each position.
 
