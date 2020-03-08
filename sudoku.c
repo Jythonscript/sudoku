@@ -8,8 +8,6 @@
 #define COLOR "\033[0;31m"
 #define NOCOLOR "\033[0m"
 
-void fillZeroes(int* list, int length);
-
 // print board
 void printBoard(char **board, int zeroes) {
 
@@ -250,59 +248,24 @@ int numZeroes(char **board) {
 	return count;
 }
 
-// check if the current board is valid by looking at only the given row and column
-// this is faster that isValid if only one tile has been changed
+// check if the current board would be able to have value placed at board[row][col]
 // return 1 if valid and 0 if invalid
-int pointIsValid(char **board, int row, int column) {
+int pointIsValid(char **board, int row, int col, char value) {
 	
-	//check the given row for unique values
-	int valueCounts[COLUMNS];
-	fillZeroes(valueCounts, COLUMNS);
-	for (int j = 0; j < COLUMNS; j++) {
-
-		int currentValue = board[row][j];
-		if (currentValue > 0 && currentValue <= COLUMNS) {
-			valueCounts[currentValue - 1]++;
-			if (valueCounts[currentValue - 1] > 1) {
-				//printf("Did not pass row test for row=%d j=%d currentvalue=%d\n", row, j, currentValue);
-				return 0;
-			}
-		}
-	} // end for
-
-	//check the given column for unique values
-	fillZeroes(valueCounts, COLUMNS);
 	for (int i = 0; i < ROWS; i++) {
-
-		int currentValue = board[i][column];
-		if (currentValue > 0 && currentValue <= ROWS) {
-			valueCounts[currentValue - 1]++;
-			if (valueCounts[currentValue - 1] > 1) {
-				//printf("Did not pass column test for i=%d column=%d currentvalue=%d\n", i, column, currentValue);
-				return 0;
-			}
+		// check entire row
+		if (board[row][i] == value) {
+			return 0;
 		}
-	} // end for
+		// check entire column
+		if (board[i][col] == value) {
+			return 0;
+		}
 
-
-	// check the current square for unique values
-	int startRow = row - (row % (ROWS / 3));
-	int startCol = column - (column % (COLUMNS / 3));
-	fillZeroes(valueCounts, COLUMNS);
-	for (int i = startRow; i < startRow + (ROWS / 3); i++) {
-		for (int j = startCol; j < startCol + (COLUMNS / 3); j++) {
-
-			int currentValue = board[i][j];
-			if (currentValue > 0 && currentValue <= ROWS) {
-				valueCounts[currentValue - 1]++;
-				if (valueCounts[currentValue - 1] > 1) {
-					//printf("Did not pass square test for i=%d j=%d currentvalue=%d\n", i, j, currentValue);
-					return 0;
-				}
-			}
-		} // end for
-	} // end for
-
+		if (board[row - (row  % 3) + (i / 3)][col - (col % 3) + (i % 3)] == value) {
+			return 0;
+		}
+	}
 	return 1;
 }
 
@@ -421,7 +384,7 @@ void pushPoint(point_t *point, point_t **ptr) {
 	(*ptr)++;
 }
 
-// wrapper for pointStackSolve that sets up the stack and pointer
+// wrapper for backtraceSolve that simplifies the board and then runs the solver
 // return 1 if the board is solved
 // return 0 if the board is not solvable
 int solve(char **board) {
@@ -429,22 +392,12 @@ int solve(char **board) {
 	// simplify the board and set up nums
 	nums_t **nums = simplify(board);
 
-	// get the number of zeroes
-	int *zeroes = (int *) malloc(sizeof(int));
-	(*zeroes) = numZeroes(board);
-	
-	// set up the stack
-	point_t *stack = (point_t *) malloc(sizeof(point_t) * (*zeroes));
-	point_t *ptr = stack;
-	char *solved = (char *) malloc(sizeof(char));
-	*solved = 0;
-
 	// solve the board
-	pointStackSolve(board, nums, stack, ptr, solved, zeroes);
+	backtraceSolve(board, nums, 0, 0);
 
 	// free memory
-	free(stack);
-	free(solved);
+	deleteNums(nums);
+
 	return isValid(board);
 }
 
@@ -453,6 +406,62 @@ void printStackInfo(point_t *stack, int length) {
 
 	for (int i = 0; i < length; i++) {
 		printf("row: %d\tcolumn: %d\n", (stack + i)->row, (stack + i)->column);
+	}
+}
+
+// recursive backtrace solving function that does not need to use isSolved()
+// this is the fastest solving function currently
+int backtraceSolve(char **board, nums_t **nums, int row, int col) {
+
+	if (row < 9 && col < 9) {
+		// if the number is already filled in
+		if (board[row][col] != 0) {
+			// check for column overflow
+			if (col < 8) {
+				return backtraceSolve(board, nums, row, col + 1);
+			}
+			// check for row overflow
+			else if (row < 8) {
+				return backtraceSolve(board, nums, row + 1, 0);
+			}
+			else {
+				return 1;
+			}
+		}
+		// if the number is not filled in
+		else {
+			for (int num = 1; num <= ROWS; num++) {
+				// check if it is possible
+				if (nums[row][col].n[num - 1] == 1 && pointIsValid(board, row, col, num)) {
+					// try filling it in
+					board[row][col] = num;
+					if (col < 8) {
+						if (backtraceSolve(board, nums, row, col + 1)) {
+							return 1;
+						}
+						else {
+							board[row][col] = 0;
+						}
+					}
+					else if (row < 8) {
+						if (backtraceSolve(board, nums, row + 1, 0)) {
+							return 1;
+						}
+						else {
+							board[row][col] = 0;
+						}
+					}
+					else {
+						return 1;
+					}
+				} // end pointIsValid
+			} // end for
+		}
+		// dead end reached
+		return 0;
+	}
+	else {
+		return 1;
 	}
 }
 
@@ -483,10 +492,11 @@ char **pointStackSolve(char **board, nums_t **nums, point_t *stack, point_t *ptr
 				// replace zeroes with each number, if they are a possiblility
 				for (int k = 1; k <= COLUMNS; k++) {
 
-					board[row][col] = k;
-
 					// do not try values that are not possibilities
-					if (nums[row][col].n[k - 1] == 1 && pointIsValid(board, row, col)) {
+					if (pointIsValid(board, row, col, k)) {
+
+						board[row][col] = k;
+
 						// keep going since the branch is good
 						pointStackSolve(board, nums, stack, ptr, solved, zeroes);
 
@@ -617,7 +627,7 @@ nums_t** simplify(char **board) {
 	return nums;
 }
 
-// return a hint from the board, return null if none found
+// return a hint from the board, hint will contain -1 if none found
 hint_t* getHint(char **board) {
 
 	nums_t **nums = createNums();
