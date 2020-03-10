@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 					   "  -z, --zeroes      print zeroes instead of blank spaces when printing the board\n"
 					   "\n"
 					   "Miscellaneous:\n"
-					   "  -d, --debug       run the solve function on a test board, for testing\n"
+					   "  -d, --debug       print additional info before solving\n"
 					   "  -h, --help        display this help and exit\n"
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
@@ -94,40 +94,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	if (debug) {
-		//char newBoard[9][9] = {{7,6,0,0,2,0,9,0,0}, {0,0,4,0,0,0,0,2,0}, {8,0,0,0,0,4,0,0,3}, {0,2,8,0,0,1,3,0,7}, {6,3,1,0,7,0,4,8,2}, {4,0,7,8,0,0,5,6,0}, {2,0,0,5,0,0,0,0,6}, {0,8,0,0,0,0,7,0,0}, {0,0,5,0,8,0,0,4,9}};
-		char newBoard[9][9] = {{0,0,2,1,0,5,0,6,0}, {9,0,5,4,0,0,3,0,0}, {0,0,1,0,2,9,0,0,0}, {0,0,4,0,0,0,0,1,0}, {8,0,0,9,0,2,0,0,6}, {0,0,0,0,0,0,2,0,0}, {0,0,0,0,5,0,0,0,0}, {0,0,7,0,0,6,1,0,2}, {0,1,0,3,0,4,8,0,0}};
-		//char newBoard[9][9] = {{9, 6, 4, 1, 2, 7, 3, 8, 5}, {7, 3, 5, 6, 9, 8, 4, 1, 2}, {8, 1, 2, 3, 4, 5, 9, 7, 6}, {6, 2, 9, 7, 8, 1, 5, 3, 4}, {4, 8, 1, 5, 3, 2, 7, 6, 9}, {3, 5, 7, 4, 6, 9, 1, 2, 8}, {5, 9, 3, 8, 7, 6, 2, 4, 1}, {2, 4, 6, 9, 1, 3, 8, 5, 7}, {1, 7, 8, 2, 5, 4, 6, 9, 3}};
-
-		// put the board into the heap so it can be passed as a parameter
-		char **board = createBoard();
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				board[i][j] = newBoard[i][j];
-			}
-		}
-		char **originalBoard = createBoard();
-		boardcpy(board, originalBoard, 9);
-		// show the original board, then solve it
-		printf("Initial board\n");
-		printBoard(originalBoard, printZeroes);
-
-		if (solve(board)) {
-			printf("\nSolved board\n");
-			if (color) {
-				printBoardDiff(originalBoard, board, printZeroes);
-			}
-			else {
-				printBoard(board, printZeroes);
-			}
-		}
-		else {
-			printf("The board is not solvable\n");
-		}
-		deleteBoard(board);
-		deleteBoard(originalBoard);
-	}
-	else if (input) {
+	if (input) {
 		char **board = readBoard(quiet);
 		char **originalBoard = createBoard();
 		boardcpy(board, originalBoard, 9);
@@ -138,7 +105,7 @@ int main(int argc, char **argv) {
 			putchar('\n');
 		}
 
-		if (hint == 0 && isValid(board) && solve(board)) {
+		if (hint == 0 && isValid(board) && solve(board, debug)) {
 			printf("Solved board\n");
 			if (color) {
 				printBoardDiff(originalBoard, board, printZeroes);
@@ -181,7 +148,7 @@ int main(int argc, char **argv) {
 			putchar('\n');
 		}
 
-		if (hint == 0 && isValid(board) && solve(board)) {
+		if (hint == 0 && isValid(board) && solve(board, debug)) {
 			printf("Solved board\n");
 			if (color) {
 				printBoardDiff(originalBoard, board, printZeroes);

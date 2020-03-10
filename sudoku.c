@@ -387,10 +387,19 @@ void pushPoint(point_t *point, point_t **ptr) {
 // wrapper for backtraceSolve that simplifies the board and then runs the solver
 // return 1 if the board is solved
 // return 0 if the board is not solvable
-int solve(char **board) {
+int solve(char **board, char debug) {
 
 	// simplify the board and set up nums
 	nums_t **nums = simplify(board);
+
+	if (debug) {
+		puts("\nSimplified board:");
+		printBoard(board, 0);
+
+		puts("Nums:");
+		printNums(nums);
+		puts("");
+	}
 
 	// solve the board
 	backtraceSolve(board, nums, 0, 0);

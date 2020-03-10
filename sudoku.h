@@ -33,7 +33,7 @@ void deleteHint(hint_t *hint);
 void printNums(nums_t **nums);
 void revertBoard(char **board, point_t *stack, point_t **ptr);
 void pushPoint(point_t *point, point_t **ptr);
-int solve(char **board);
+int solve(char **board, char debug);
 void printStackInfo(point_t *stack, int length);
 char **pointStackSolve(char **board, nums_t **nums, point_t *stack, point_t *ptr, char *solved, int *zeroes);
 int backtraceSolve(char **board, nums_t **nums, int row, int col);
