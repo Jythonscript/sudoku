@@ -15,7 +15,7 @@ void solve_button_clicked(GtkButton *button, gpointer user_data) {
 
 	boardcpy(inputBoard, unsolvedBoard, 9);
 
-	int status = solve(inputBoard);
+	int status = solve(inputBoard, 0);
 
 	// stop if invalid board
 	if (status == 0) {
