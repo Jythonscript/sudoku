@@ -595,6 +595,7 @@ int getSingleOption(nums_t **nums, int row, int col) {
 // nums must be freed later
 nums_t** simplify(char **board) {
 
+	// the values that can be placed in each spot
 	nums_t **nums = createNums();
 
 	// boolean for checking when to stop
