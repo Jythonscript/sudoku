@@ -21,4 +21,5 @@ First, the program runs through the board and eliminates possibilities for what 
 The next phase of the solving algorithm uses backtracing to look through the remaining possible boards. It uses an efficient method where it only checks the necessary parts of the board when a change is made to see if the board is valid, so it never needs to scan the entire board to check for inconsistencies.
 
 ## Future plans
-Future plans include to improve the solving algorithm, allowing for multiple threads to be used when solving, and improving on the hint system which is very limited right now.
+* Improving the hint system
+* Adding a file selector to the GUI
