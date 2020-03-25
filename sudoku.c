@@ -578,14 +578,14 @@ int getSingleOption(nums_t **nums, int row, int col) {
 	}
 	
 	char index = -1;
-	char foundNonzero = 0;
+	char foundNonzero = 0; // boolean for whether a nonzero has been found
 	for (int i = 0; i < 9; i++) {
 		if (nums[row][col].n[i] != 0) {
 			if (foundNonzero == 1) {
 				return -1;
 			}
-			index = i;
-			foundNonzero = 1;
+			index = i; // make note of current index
+			foundNonzero = 1; // found a nonzero
 		}
 	}
 	return index + 1;
@@ -595,6 +595,7 @@ int getSingleOption(nums_t **nums, int row, int col) {
 // nums must be freed later
 nums_t** simplify(char **board) {
 
+	// the values that can be placed in each spot
 	nums_t **nums = createNums();
 
 	// boolean for checking when to stop
@@ -606,13 +607,15 @@ nums_t** simplify(char **board) {
 		// update nums
 		for (int row = 0; row < ROWS; row++) {
 			for (int col = 0; col < COLUMNS; col++) {
-				if (board[row][col] != 0) {
+				char value = board[row][col];
 
-					setSquare(nums, row, col, board[row][col], 0);
-					setRow(nums, row, board[row][col], 0);
-					setColumn(nums, col, board[row][col], 0);
-					nums[row][col].n[board[row][col] - 1] = 1;
-					setOtherNums(nums, row, col, board[row][col], 0);
+				if (value != 0) {
+					// update nums from value
+					setSquare(nums, row, col, value, 0);
+					setRow(nums, row, value, 0);
+					setColumn(nums, col, value, 0);
+					nums[row][col].n[value - 1] = 1;
+					setOtherNums(nums, row, col, value, 0);
 				}
 			}
 		}
