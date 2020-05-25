@@ -5,6 +5,8 @@ This C program solves sudoku puzzles.
 * getopts
 * readline
 * GTK3
+* make
+* gcc
 
 ## Make commands
 `make`: standard compilation
