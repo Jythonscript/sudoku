@@ -11,7 +11,7 @@ This C program solves sudoku puzzles.
 
 `make debug`: compile with debugging information
 
-`make clean`: remove
+`make clean`: remove build files
 
 ## How it works
 This program uses a two-dimensional char array to represent the board, and uses a two-dimensional array of nine-char structs to represent the possible values that could be valid in each position.
