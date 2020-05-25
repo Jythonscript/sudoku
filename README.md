@@ -1,6 +1,8 @@
 # Sudoku Solver
 This C program solves sudoku puzzles. 
 
+`./sudoku -h` after building for a list and description of all command-line arguments
+
 ## Dependencies
 * getopts
 * readline
