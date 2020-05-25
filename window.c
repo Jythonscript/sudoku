@@ -1,6 +1,9 @@
 #include <stdlib.h>
-#include "window.h"
+#include <gtk/gtk.h>
 #include "sudoku.h"
+
+GtkWidget *** boxes; // the grid of textboxes
+char **unsolvedBoard; // the board before solve was clicked
 
 void solve_button_clicked(GtkButton *button, gpointer user_data) {
 	puts("solve button clicked");
