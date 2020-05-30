@@ -1,60 +1,17 @@
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "sudoku.h"
+#include "input.h"
 
 GtkWidget *** boxes; // the grid of textboxes
 char **unsolvedBoard; // the board before solve was clicked
 
-void solve_button_clicked(GtkButton *button, gpointer user_data) {
-	puts("solve button clicked");
-	char **inputBoard = createBoard();
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			// TODO - add safety check to ensure valid characters
-			char *temp = g_strndup(gtk_entry_get_text((GtkEntry *)boxes[i][j]), 1);
-			inputBoard[i][j] = (char) atoi(temp);
-		}
-	}
-
-	boardcpy(inputBoard, unsolvedBoard, 9);
-
-	int status = solve(inputBoard, 0);
-
-	// stop if invalid board
-	if (status == 0) {
-		return;
-	}
-
+// write the 2d char array to the textboxes
+void writeBoardToWindow(char **board) {
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
 			char str[2];
-			sprintf(str, "%d", inputBoard[i][j]);
-			gtk_entry_set_text((GtkEntry *)boxes[i][j], str);
-		}
-	}
-	deleteBoard(inputBoard);
-}
-
-void reset_button_clicked(GtkButton *button, gpointer user_data) {
-	puts("reset button clicked");
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			gtk_entry_set_text((GtkEntry *)boxes[i][j], "");
-		}
-	}
-}
-
-void exit_button_clicked(GtkButton *button, gpointer user_data) {
-	puts("exit button clicked");
-	exit(0);
-}
-
-void unsolve_button_clicked(GtkButton *button, gpointer user_data) {
-	puts("unsolve button clicked");
-	for (int i = 0; i < 9; i++) {
-		for (int j = 0; j < 9; j++) {
-			char str[2];
-			sprintf(str, "%d", unsolvedBoard[i][j]);
+			sprintf(str, "%d", board[i][j]);
 			if (str[0] == '0') {
 				gtk_entry_set_text((GtkEntry *)boxes[i][j], "");
 			}
@@ -65,6 +22,70 @@ void unsolve_button_clicked(GtkButton *button, gpointer user_data) {
 	}
 }
 
+// solve the board
+void solve_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("solve button clicked");
+
+	// save board as 2d char array
+	char **inputBoard = createBoard();
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			// TODO - add safety check to ensure valid characters
+			char *temp = g_strndup(gtk_entry_get_text((GtkEntry *)boxes[i][j]), 1);
+			inputBoard[i][j] = (char) atoi(temp);
+		}
+	}
+
+	// make a backup of the board
+	boardcpy(inputBoard, unsolvedBoard, 9);
+
+	// solve the board
+	int status = solve(inputBoard, 0);
+
+	// stop if the board is not solvable
+	if (status == 0) {
+		return;
+	}
+
+	// write the solved board to the textboxes
+	writeBoardToWindow(inputBoard);
+	/*
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			char str[2];
+			sprintf(str, "%d", inputBoard[i][j]);
+			gtk_entry_set_text((GtkEntry *)boxes[i][j], str);
+		}
+	}
+	*/
+
+	// free the temporary solving board
+	deleteBoard(inputBoard);
+}
+
+// clear all of the textboxes on the board
+void reset_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("reset button clicked");
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 9; j++) {
+			gtk_entry_set_text((GtkEntry *)boxes[i][j], "");
+		}
+	}
+}
+
+// quit the program
+void exit_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("exit button clicked");
+	exit(0);
+}
+
+// return the board to the state it was in before the solve button was pressed
+void unsolve_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("unsolve button clicked");
+	writeBoardToWindow(unsolvedBoard);
+}
+
+// fill in one tile of the board, if one can be determined
 void hint_button_clicked(GtkButton *button, gpointer user_data) {
 	puts("hint button clicked");
 
@@ -90,6 +111,42 @@ void hint_button_clicked(GtkButton *button, gpointer user_data) {
 	deleteBoard(inputBoard);
 }
 
+// show a dialog where the user can choose a board file to open
+void file_button_clicked(GtkButton *button, gpointer user_data) {
+	puts("file button clicked");
+
+	GtkWidget *dialog;
+	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+	gint res;
+
+	// set up the dialog
+	dialog = gtk_file_chooser_dialog_new ("Open File",
+			NULL, // parent window
+			action,
+			("Cancel"),
+			GTK_RESPONSE_CANCEL,
+			("Open"),
+			GTK_RESPONSE_ACCEPT,
+			NULL);
+
+	// run the dialog
+	res = gtk_dialog_run(GTK_DIALOG(dialog));
+
+	// interpret the dialog response
+	if (res == GTK_RESPONSE_ACCEPT) {
+		char *filename;
+		GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
+		filename = gtk_file_chooser_get_filename(chooser);
+		// read the board and write to the window
+		printf("reading board from %s\n", filename);
+		char **board = fileBoard(filename);
+		writeBoardToWindow(board);
+		// clean up memory
+		g_free(filename);
+	}
+	gtk_widget_destroy(dialog);
+}
+
 // set up widgets onto window
 static void activate(GtkApplication *app, gpointer user_data) {
 	// set up board for undoing solve
@@ -106,6 +163,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
 	GtkWidget *exitButton;
 	GtkWidget *hintButton;
 	GtkWidget *unsolveButton;
+	GtkWidget *fileButton;
 
 	// set up 2d array for boxes
 	boxes = (GtkWidget ***) malloc(sizeof(GtkWidget **) * 9);
@@ -200,6 +258,14 @@ static void activate(GtkApplication *app, gpointer user_data) {
 			"clicked",
 			G_CALLBACK(hint_button_clicked),
 			G_OBJECT(window));
+
+	fileButton = gtk_button_new_with_label("Open file");
+	gtk_grid_attach(GTK_GRID(gridMain), fileButton, 2, 4, 1, 1);
+	g_signal_connect(GTK_BUTTON(fileButton),
+			"clicked",
+			G_CALLBACK(file_button_clicked),
+			G_OBJECT(window));
+
 
 	gtk_widget_show_all(window);
 }
