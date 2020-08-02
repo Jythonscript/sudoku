@@ -654,8 +654,8 @@ hint_t* getHint(char **board) {
 		// update nums
 		for (int row = 0; row < ROWS; row++) {
 			for (int col = 0; col < COLUMNS; col++) {
+				// if this tile is filled in, update nearby nums accordingly
 				if (board[row][col] != 0) {
-
 					setSquare(nums, row, col, board[row][col], 0);
 					setRow(nums, row, board[row][col], 0);
 					setColumn(nums, col, board[row][col], 0);
