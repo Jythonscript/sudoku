@@ -4,11 +4,12 @@ This C program solves sudoku puzzles.
 `./sudoku -h` after building for a list and description of all command-line arguments
 
 ## Dependencies
-* getopts
-* readline
 * GTK3
-* make
 * gcc
+* getopts
+* make
+* pkg-config
+* readline
 
 ## Make commands
 `make`: standard compilation
