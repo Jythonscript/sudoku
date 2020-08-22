@@ -7,6 +7,7 @@ This C program solves sudoku puzzles.
 * getopts
 * make
 * gcc
+* pkg-config
 * GTK3 (optional)
 * readline (optional)
 

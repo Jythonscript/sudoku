@@ -91,6 +91,7 @@ void unsolve_button_clicked(GtkButton *button, gpointer user_data) {
 void hint_button_clicked(GtkButton *button, gpointer user_data) {
 	puts("hint button clicked");
 
+	// transfer the textboxes to a char array
 	char **inputBoard = createBoard();
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 9; j++) {
@@ -100,16 +101,18 @@ void hint_button_clicked(GtkButton *button, gpointer user_data) {
 		}
 	}
 
+	// get the hint
 	hint_t *hint = getHint(inputBoard);
 
+	// apply the hint to the board, if a hint was found
 	if (hint->value != -1) {
-
 		char str[2];
 		sprintf(str, "%d", hint->value);
 		gtk_entry_set_text((GtkEntry *)boxes[hint->row][hint->column], str);
 	}
-	deleteHint(hint);
 
+	// free temporary resources used in this function
+	deleteHint(hint);
 	deleteBoard(inputBoard);
 }
 
