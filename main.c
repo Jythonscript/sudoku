@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
-#include <gtk/gtk.h>
+#include <string.h>
 #include "input.h"
 #include "sudoku.h"
 #include "window.h"
+
+#ifdef USE_GTK
+#include <gtk/gtk.h>
+#endif
 
 int main(int argc, char **argv) {
 
@@ -40,9 +44,7 @@ int main(int argc, char **argv) {
 	char color = 0;
 	char printZeroes = 0;
 	char hint = 0;
-#ifdef USE_GTK
 	char window = (argc == 1) ? (1) : (0);
-#endif
 
 	// getopts
 	while (1) {
@@ -194,15 +196,15 @@ int main(int argc, char **argv) {
 		deleteBoard(board);
 		deleteBoard(originalBoard);
 	}
-#ifdef USE_GTK
 	// start GTK application if no command-line arguments specified
 	else if (window){
+#ifdef USE_GTK
 		puts("Ran GTK app");
 		app_new(argc, argv);
-	}
 #else
-	puts(helpstring);
+		puts(helpstring);
 #endif
+	}
 
 	return 0;
 }

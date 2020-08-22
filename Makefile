@@ -10,7 +10,6 @@ IDIR=./
 CC=gcc
 
 CFLAGS = -I $(IDIR) -O3
-CFLAGS += `pkg-config --cflags gtk+-3.0`
 
 LFLAGS=
 
