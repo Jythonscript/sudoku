@@ -5,10 +5,10 @@ This C program solves sudoku puzzles.
 
 ## Dependencies
 * getopts
-* readline
-* GTK3
 * make
 * gcc
+* GTK3 (optional)
+* readline (optional)
 
 ## Make commands
 `make`: standard compilation
@@ -16,6 +16,8 @@ This C program solves sudoku puzzles.
 `make debug`: compile with debugging information
 
 `make clean`: remove build files
+
+To enable or disable the optional dependencies, change the Makefile variables `USE_GTK`, `USE_READLINE` to 1 (enabled) or 0 (disabled) before compiling. You may need to run `make clean` if you have already compiled for this to take effect.
 
 ## How it works
 This program uses a two-dimensional char array to represent the board, and uses a two-dimensional array of nine-char structs to represent the possible values that could be valid in each position.

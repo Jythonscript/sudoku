@@ -9,11 +9,15 @@
 int main(int argc, char **argv) {
 
 	char *helpstring = "Usage: sudoku [OPTION]\n"
+#ifdef USE_GTK
 					   "When no options are specified, a GTK user interface is ran\n"
+#endif
 					   "\n"
 					   "Input control:\n"
 					   "  -f, --file        input the board through the specified text file\n"
+#ifdef USE_READLINE
 					   "  -i, --input       input the board through readline\n"
+#endif
 					   "\n"
 					   "Output control:\n"
 					   "  -c, --color       print the board with the changed numbers colored in\n"
@@ -36,7 +40,9 @@ int main(int argc, char **argv) {
 	char color = 0;
 	char printZeroes = 0;
 	char hint = 0;
+#ifdef USE_GTK
 	char window = (argc == 1) ? (1) : (0);
+#endif
 
 	// getopts
 	while (1) {
@@ -94,6 +100,7 @@ int main(int argc, char **argv) {
 		}
 	}
 
+#ifdef USE_READLINE
 	if (input) {
 		char **board = readBoard(quiet);
 		char **originalBoard = createBoard();
@@ -137,7 +144,15 @@ int main(int argc, char **argv) {
 		deleteBoard(originalBoard);
 	}
 	else if (useFile) {
+#else
 
+	if (input) {
+		fprintf(stderr, "-i flag not supported, sudoku not compiled with readline support\n");
+		exit(1);
+	}
+
+	if (useFile) {
+#endif
 		char **board = fileBoard(filename);
 		char **originalBoard = createBoard();
 		boardcpy(board, originalBoard, 9);
@@ -179,11 +194,15 @@ int main(int argc, char **argv) {
 		deleteBoard(board);
 		deleteBoard(originalBoard);
 	}
+#ifdef USE_GTK
 	// start GTK application if no command-line arguments specified
 	else if (window){
 		puts("Ran GTK app");
 		app_new(argc, argv);
 	}
+#else
+	puts(helpstring);
+#endif
 
 	return 0;
 }

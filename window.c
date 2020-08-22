@@ -1,3 +1,5 @@
+#ifdef USE_GTK
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include "sudoku.h"
@@ -279,3 +281,5 @@ void app_new (int argc, char **argv) {
 	status = g_application_run(G_APPLICATION (app), argc, argv);
 	g_object_unref(app);
 }
+
+#endif // USE_GTK

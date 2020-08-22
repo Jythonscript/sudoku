@@ -4,6 +4,7 @@
 #include "sudoku.h"
 
 // return a board that was read from readline
+#ifdef USE_READLINE
 char **readBoard(const char quiet) {
 	
 	char **board = createBoard();
@@ -36,6 +37,7 @@ char **readBoard(const char quiet) {
 	}
 	return board;
 }
+#endif // USE_READLINE
 
 // return a board that was read from a file
 char **fileBoard(char *filename) {
