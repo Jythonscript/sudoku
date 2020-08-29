@@ -1,6 +1,6 @@
 TARGET := sudoku
 BUILD := build
-SOURCES := .
+SOURCES := src
 OUTPUT := $(TARGET)
 
 CFILES := $(foreach dir, $(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
@@ -41,7 +41,7 @@ $(BUILD):
 clean:
 	rm -rf $(BUILD) $(TARGET)
 
-$(BUILD)/%.o: %.c
+$(BUILD)/%.o: $(SOURCES)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OUTPUT): $(OFILES)
