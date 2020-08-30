@@ -35,10 +35,12 @@ int main(int argc, char **argv) {
 					   "\n"
 					   "Source: <https://github.com/Jythonscript/sudoku>";
 
+	int filename_len = 30;
+
 	// flags
 	char input = 0;
 	char useFile = 0;
-	char filename[30];
+	char *filename = (char *) malloc(sizeof(char *) * filename_len);
 	char quiet = 0;
 	char debug = 0;
 	char color = 0;
@@ -74,7 +76,21 @@ int main(int argc, char **argv) {
 				break;
 			case 'f':
 				useFile = 1;
-				strncpy(filename, optarg, 30);
+				// copy the filename from 'optarg' to 'filename'
+				int current_index = 0;
+				do {
+					if (current_index >= filename_len) {
+						filename_len *= 2;
+						filename = realloc(filename, filename_len);
+					}
+					if (filename == NULL) {
+						fputs("invalid filename\n", stderr);
+						exit(1);
+					}
+					else {
+						filename[current_index] = optarg[current_index];
+					}
+				} while (optarg[current_index++] != '\0');
 				break;
 			case 'q':
 				quiet = 1;
