@@ -118,108 +118,70 @@ int main(int argc, char **argv) {
 		}
 	}
 
-#ifdef USE_READLINE
-	if (input) {
-		char **board = readBoard(quiet);
-		char **originalBoard = createBoard();
-		boardcpy(board, originalBoard, 9);
-
-		if (quiet == 0) {
-			printf("Entered board\n");
-			printBoard(board, printZeroes);
-			putchar('\n');
-		}
-
-		if (hint == 0 && isValid(board) && solve(board, debug)) {
-			printf("Solved board\n");
-			if (color) {
-				printBoardDiff(originalBoard, board, printZeroes);
-			}
-			else {
-				printBoard(board, printZeroes);
-			}
-		}
-		else if (hint) {
-			char **firstBoard = createBoard();
-			boardcpy(board, firstBoard, 9);
-
-			hint_t *hint = getHint(board);
-
-			if (hint->value == -1) {
-				printf("No hint found\n");
-			}
-			else {
-				printBoardDiff(firstBoard, board, printZeroes);
-			}
-			deleteBoard(firstBoard);
-		}
-		else {
-			fprintf(stderr, "The board is not solvable\n");
-		}
-
-		// free allocated memory
-		deleteBoard(board);
-		deleteBoard(originalBoard);
-	}
-	else if (useFile) {
-#else
-
-	if (input) {
-		fprintf(stderr, "-i flag not supported, sudoku not compiled with readline support\n");
-		exit(1);
-	}
-
-	if (useFile) {
-#endif
-		char **board = fileBoard(filename);
-		char **originalBoard = createBoard();
-		boardcpy(board, originalBoard, 9);
-
-		if (quiet == 0) {
-			printf("Original board\n");
-			printBoard(board, printZeroes);
-			putchar('\n');
-		}
-
-		if (hint == 0 && isValid(board) && solve(board, debug)) {
-			printf("Solved board\n");
-			if (color) {
-				printBoardDiff(originalBoard, board, printZeroes);
-			}
-			else {
-				printBoard(board, printZeroes);
-			}
-		}
-		else if (hint) {
-			char **firstBoard = createBoard();
-			boardcpy(board, firstBoard, 9);
-
-			hint_t *hint = getHint(board);
-
-			if (hint->value == -1) {
-				printf("No hint found\n");
-			}
-			else {
-				printBoardDiff(firstBoard, board, printZeroes);
-			}
-			deleteBoard(firstBoard);
-		}
-		else {
-			fprintf(stderr, "The board is not solvable\n");
-		}
-
-		// free allocated memory
-		deleteBoard(board);
-		deleteBoard(originalBoard);
-	}
 	// start GTK application if no command-line arguments specified
-	else if (window){
+	if (window){
 #ifdef USE_GTK
 		puts("Ran GTK app");
 		app_new(argc, argv);
 #else
 		puts(helpstring);
 #endif
+	}
+	// otherwise run the solver
+	else {
+		char **board;
+		char **originalBoard;
+
+		if (useFile) {
+			board = fileBoard(filename);
+		}
+		else if (input) {
+#ifdef USE_READLINE
+			board = readBoard(quiet);
+#else
+			fprintf(stderr, "-i flag not supported, sudoku not compiled with readline support\n");
+			exit(1);
+#endif
+		}
+		originalBoard = createBoard();
+		boardcpy(board, originalBoard, 9);
+
+		if (!quiet) {
+			printf("Entered board\n");
+			printBoard(board, printZeroes);
+			putchar('\n');
+		}
+
+		if (!hint && isValid(board) && solve(board, debug)) {
+			printf("Solved board\n");
+			if (color) {
+				printBoardDiff(originalBoard, board, printZeroes);
+			}
+			else {
+				printBoard(board, printZeroes);
+			}
+		}
+		else if (hint) {
+			char **firstBoard = createBoard();
+			boardcpy(board, firstBoard, 9);
+
+			hint_t *hint = getHint(board);
+
+			if (hint->value == -1) {
+				printf("No hint found\n");
+			}
+			else {
+				printBoardDiff(firstBoard, board, printZeroes);
+			}
+			deleteBoard(firstBoard);
+		}
+		else {
+			fprintf(stderr, "The board is not solvable\n");
+		}
+
+		// free allocated memory
+		deleteBoard(board);
+		deleteBoard(originalBoard);
 	}
 
 	return 0;
